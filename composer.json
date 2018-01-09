@@ -1,0 +1,19 @@
+{
+    "name": "laravel-zero/foundation",
+    "description": "This is a mirror from illuminate/foundation.",
+    "keywords": ["framework", "laravel"],
+    "license": "MIT",
+    "require": {
+        "php": ">=7.0",
+    },
+    "autoload": {
+        "psr-4": {
+            "Illuminate\\": "src/Illuminate/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
