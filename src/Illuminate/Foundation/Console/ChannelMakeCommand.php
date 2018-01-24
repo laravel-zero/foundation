@@ -4,28 +4,43 @@ namespace Illuminate\Foundation\Console;
 
 use Illuminate\Console\GeneratorCommand;
 
-class RuleMakeCommand extends GeneratorCommand
+class ChannelMakeCommand extends GeneratorCommand
 {
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'make:rule';
+    protected $name = 'make:channel';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a new validation rule';
+    protected $description = 'Create a new channel class';
 
     /**
      * The type of class being generated.
      *
      * @var string
      */
-    protected $type = 'Rule';
+    protected $type = 'Channel';
+
+    /**
+     * Build the class with the given name.
+     *
+     * @param  string  $name
+     * @return string
+     */
+    protected function buildClass($name)
+    {
+        return str_replace(
+            'DummyUser',
+            class_basename(config('auth.providers.users.model')),
+            parent::buildClass($name)
+        );
+    }
 
     /**
      * Get the stub file for the generator.
@@ -34,7 +49,7 @@ class RuleMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__.'/stubs/rule.stub';
+        return __DIR__.'/stubs/channel.stub';
     }
 
     /**
@@ -45,6 +60,6 @@ class RuleMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace.'\Rules';
+        return $rootNamespace.'\Broadcasting';
     }
 }
