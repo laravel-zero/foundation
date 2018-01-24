@@ -4,9 +4,12 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": ">=7.0"
+        "php": "^7.1.3"
     },
     "autoload": {
+        "files": [
+            "src/Illuminate/Foundation/helpers.php"
+        ],
         "psr-4": {
             "Illuminate\\": "src/Illuminate/"
         }
