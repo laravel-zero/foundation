@@ -2,10 +2,6 @@
 
 This is a mirror from https://github.com/laravel/framework/tree/5.6/src/Illuminate/Foundation
 
-## Notes
-
-The only difference is `src/Illuminate/Foundation/Application` don't implements symfony HttpKernelInterface.
-
 ## Support the development
 **Do you like this project? Support it by donating**
 
