@@ -22,14 +22,14 @@ use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 
-class Application extends Container implements ApplicationContract, HttpKernelInterface
+class Application extends Container implements ApplicationContract
 {
     /**
      * The Laravel framework version.
      *
      * @var string
      */
-    const VERSION = '5.6.1';
+    const VERSION = '5.6.3';
 
     /**
      * The base path for the Laravel installation.
