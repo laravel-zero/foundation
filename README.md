@@ -1,6 +1,6 @@
 ## About Laravel Zero Foundation
 
-This is a mirror from https://github.com/laravel/framework/tree/5.6/src/Illuminate/Foundation
+This is a mirror from https://github.com/laravel/framework/tree/5.4/src/Illuminate/Foundation
 
 ## Notes
 

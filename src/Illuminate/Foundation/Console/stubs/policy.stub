@@ -2,7 +2,7 @@
 
 namespace DummyNamespace;
 
-use NamespacedDummyUserModel;
+use DummyRootNamespaceUser;
 use NamespacedDummyModel;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -11,48 +11,48 @@ class DummyClass
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the DocDummyModel.
+     * Determine whether the user can view the dummyModel.
      *
-     * @param  \NamespacedDummyUserModel  $user
+     * @param  \DummyRootNamespaceUser  $user
      * @param  \NamespacedDummyModel  $dummyModel
      * @return mixed
      */
-    public function view(DummyUser $user, DummyModel $dummyModel)
+    public function view(User $user, DummyModel $dummyModel)
     {
         //
     }
 
     /**
-     * Determine whether the user can create DocDummyPluralModel.
+     * Determine whether the user can create dummyPluralModel.
      *
-     * @param  \NamespacedDummyUserModel  $user
+     * @param  \DummyRootNamespaceUser  $user
      * @return mixed
      */
-    public function create(DummyUser $user)
+    public function create(User $user)
     {
         //
     }
 
     /**
-     * Determine whether the user can update the DocDummyModel.
+     * Determine whether the user can update the dummyModel.
      *
-     * @param  \NamespacedDummyUserModel  $user
+     * @param  \DummyRootNamespaceUser  $user
      * @param  \NamespacedDummyModel  $dummyModel
      * @return mixed
      */
-    public function update(DummyUser $user, DummyModel $dummyModel)
+    public function update(User $user, DummyModel $dummyModel)
     {
         //
     }
 
     /**
-     * Determine whether the user can delete the DocDummyModel.
+     * Determine whether the user can delete the dummyModel.
      *
-     * @param  \NamespacedDummyUserModel  $user
+     * @param  \DummyRootNamespaceUser  $user
      * @param  \NamespacedDummyModel  $dummyModel
      * @return mixed
      */
-    public function delete(DummyUser $user, DummyModel $dummyModel)
+    public function delete(User $user, DummyModel $dummyModel)
     {
         //
     }
