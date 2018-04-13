@@ -2,10 +2,10 @@
 
 namespace Illuminate\Foundation\Testing\Constraints;
 
+use PHPUnit_Framework_Constraint;
 use Illuminate\Database\Connection;
-use PHPUnit\Framework\Constraint\Constraint;
 
-class SoftDeletedInDatabase extends Constraint
+class SoftDeletedInDatabase extends PHPUnit_Framework_Constraint
 {
     /**
      * Number of records that will be shown in the console in case of failure.
@@ -48,7 +48,7 @@ class SoftDeletedInDatabase extends Constraint
      * @param  string  $table
      * @return bool
      */
-    public function matches($table): bool
+    public function matches($table)
     {
         return $this->database->table($table)
                 ->where($this->data)->whereNotNull('deleted_at')->count() > 0;
@@ -60,7 +60,7 @@ class SoftDeletedInDatabase extends Constraint
      * @param  string  $table
      * @return string
      */
-    public function failureDescription($table): string
+    public function failureDescription($table)
     {
         return sprintf(
             "any soft deleted row in the table [%s] matches the attributes %s.\n\n%s",
@@ -96,7 +96,7 @@ class SoftDeletedInDatabase extends Constraint
      *
      * @return string
      */
-    public function toString(): string
+    public function toString()
     {
         return json_encode($this->data);
     }
