@@ -221,9 +221,10 @@ class TestResponse
      * @param  string  $cookieName
      * @param  mixed  $value
      * @param  bool  $encrypted
+     * @param  bool  $unserialize
      * @return $this
      */
-    public function assertCookie($cookieName, $value = null, $encrypted = true)
+    public function assertCookie($cookieName, $value = null, $encrypted = true, $unserialize = false)
     {
         PHPUnit::assertNotNull(
             $cookie = $this->getCookie($cookieName),
@@ -237,7 +238,7 @@ class TestResponse
         $cookieValue = $cookie->getValue();
 
         $actual = $encrypted
-            ? app('encrypter')->decrypt($cookieValue) : $cookieValue;
+            ? app('encrypter')->decrypt($cookieValue, $unserialize) : $cookieValue;
 
         PHPUnit::assertEquals(
             $value, $actual,
@@ -466,12 +467,12 @@ class TestResponse
         ));
 
         foreach (Arr::sortRecursive($data) as $key => $value) {
-            $expected = substr(json_encode([$key => $value]), 1, -1);
+            $expected = $this->jsonSearchStrings($key, $value);
 
             PHPUnit::assertTrue(
                 Str::contains($actual, $expected),
                 'Unable to find JSON fragment: '.PHP_EOL.PHP_EOL.
-                "[{$expected}]".PHP_EOL.PHP_EOL.
+                '['.json_encode([$key => $value]).']'.PHP_EOL.PHP_EOL.
                 'within'.PHP_EOL.PHP_EOL.
                 "[{$actual}]."
             );
@@ -498,12 +499,12 @@ class TestResponse
         ));
 
         foreach (Arr::sortRecursive($data) as $key => $value) {
-            $unexpected = substr(json_encode([$key => $value]), 1, -1);
+            $unexpected = $this->jsonSearchStrings($key, $value);
 
             PHPUnit::assertFalse(
                 Str::contains($actual, $unexpected),
                 'Found unexpected JSON fragment: '.PHP_EOL.PHP_EOL.
-                "[{$unexpected}]".PHP_EOL.PHP_EOL.
+                '['.json_encode([$key => $value]).']'.PHP_EOL.PHP_EOL.
                 'within'.PHP_EOL.PHP_EOL.
                 "[{$actual}]."
             );
@@ -525,7 +526,7 @@ class TestResponse
         ));
 
         foreach (Arr::sortRecursive($data) as $key => $value) {
-            $unexpected = substr(json_encode([$key => $value]), 1, -1);
+            $unexpected = $this->jsonSearchStrings($key, $value);
 
             if (! Str::contains($actual, $unexpected)) {
                 return $this;
@@ -541,6 +542,24 @@ class TestResponse
     }
 
     /**
+     * Get the strings we need to search for when examining the JSON.
+     *
+     * @param  string  $key
+     * @param  string  $value
+     * @return array
+     */
+    protected function jsonSearchStrings($key, $value)
+    {
+        $needle = substr(json_encode([$key => $value]), 1, -1);
+
+        return [
+            $needle.']',
+            $needle.'}',
+            $needle.',',
+        ];
+    }
+
+    /**
      * Assert that the response has a given JSON structure.
      *
      * @param  array|null  $structure
@@ -550,7 +569,7 @@ class TestResponse
     public function assertJsonStructure(array $structure = null, $responseData = null)
     {
         if (is_null($structure)) {
-            return $this->assertJson($this->json());
+            return $this->assertExactJson($this->json());
         }
 
         if (is_null($responseData)) {
