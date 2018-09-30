@@ -25,7 +25,7 @@ if (! function_exists('abort')) {
     /**
      * Throw an HttpException with the given data.
      *
-     * @param  \Symfony\Component\HttpFoundation\Response|int     $code
+     * @param  \Symfony\Component\HttpFoundation\Response|\Illuminate\Contracts\Support\Responsable|int     $code
      * @param  string  $message
      * @param  array   $headers
      * @return void
@@ -581,7 +581,7 @@ if (! function_exists('mix')) {
         }
 
         if (file_exists(public_path($manifestDirectory.'/hot'))) {
-            $url = file_get_contents(public_path($manifestDirectory.'/hot'));
+            $url = rtrim(file_get_contents(public_path($manifestDirectory.'/hot')));
 
             if (Str::startsWith($url, ['http://', 'https://'])) {
                 return new HtmlString(Str::after($url, ':').$path);
