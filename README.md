@@ -4,7 +4,7 @@ This is a mirror from https://github.com/laravel/framework/tree/5.6/src/Illumina
 
 ## Notes
 
-On this package the class `src/Illuminate/Foundation/Application` don't implements Symfony `HttpKernelInterface`.
+In this package the class `src/Illuminate/Foundation/Application` doesn't implement Symfonys `HttpKernelInterface`.
 
 ## Support the development
 **Do you like this project? Support it by donating**
