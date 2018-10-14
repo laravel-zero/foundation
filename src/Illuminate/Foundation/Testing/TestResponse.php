@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Traits\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -743,6 +744,8 @@ class TestResponse
             PHPUnit::assertArrayHasKey($key, $this->original->getData());
         } elseif ($value instanceof Closure) {
             PHPUnit::assertTrue($value($this->original->$key));
+        } elseif ($value instanceof Model) {
+            PHPUnit::assertTrue($value->is($this->original->$key));
         } else {
             PHPUnit::assertEquals($value, $this->original->$key);
         }
@@ -883,15 +886,42 @@ class TestResponse
     }
 
     /**
+     * Assert that the session is missing the given errors.
+     *
+     * @param  string|array  $keys
+     * @param  string  $format
+     * @param  string  $errorBag
+     * @return $this
+     */
+    public function assertSessionDoesntHaveErrors($keys = [], $format = null, $errorBag = 'default')
+    {
+        $keys = (array) $keys;
+
+        if (empty($keys)) {
+            return $this->assertSessionMissing('errors');
+        }
+
+        $errors = $this->session()->get('errors')->getBag($errorBag);
+
+        foreach ($keys as $key => $value) {
+            if (is_int($key)) {
+                PHPUnit::assertFalse($errors->has($value), "Session has unexpected error: $value");
+            } else {
+                PHPUnit::assertNotContains($value, $errors->get($key, $format));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Assert that the session has no errors.
      *
      * @return $this
      */
     public function assertSessionHasNoErrors()
     {
-        $this->assertSessionMissing('errors');
-
-        return $this;
+        return $this->assertSessionMissing('errors');
     }
 
     /**
