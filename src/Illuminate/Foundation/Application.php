@@ -28,7 +28,7 @@ class Application extends Container implements ApplicationContract
      *
      * @var string
      */
-    const VERSION = '5.7.9';
+    const VERSION = '5.7.13';
 
     /**
      * The base path for the Laravel installation.
@@ -200,11 +200,11 @@ class Application extends Container implements ApplicationContract
         $this->hasBeenBootstrapped = true;
 
         foreach ($bootstrappers as $bootstrapper) {
-            $this['events']->fire('bootstrapping: '.$bootstrapper, [$this]);
+            $this['events']->dispatch('bootstrapping: '.$bootstrapper, [$this]);
 
             $this->make($bootstrapper)->bootstrap($this);
 
-            $this['events']->fire('bootstrapped: '.$bootstrapper, [$this]);
+            $this['events']->dispatch('bootstrapped: '.$bootstrapper, [$this]);
         }
     }
 
@@ -493,7 +493,7 @@ class Application extends Container implements ApplicationContract
      */
     public function isLocal()
     {
-        return $this['env'] == 'local';
+        return $this['env'] === 'local';
     }
 
     /**
