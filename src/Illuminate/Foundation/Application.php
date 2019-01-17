@@ -28,7 +28,7 @@ class Application extends Container implements ApplicationContract
      *
      * @var string
      */
-    const VERSION = '5.7.15';
+    const VERSION = '5.7.21';
 
     /**
      * The base path for the Laravel installation.
@@ -890,7 +890,7 @@ class Application extends Container implements ApplicationContract
      */
     public function getCachedConfigPath()
     {
-        return $this->bootstrapPath().'/cache/config.php';
+        return $_ENV['APP_CONFIG_CACHE'] ?? $this->bootstrapPath().'/cache/config.php';
     }
 
     /**
