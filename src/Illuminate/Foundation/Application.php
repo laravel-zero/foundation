@@ -28,7 +28,7 @@ class Application extends Container implements ApplicationContract
      *
      * @var string
      */
-    const VERSION = '5.7.21';
+    const VERSION = '5.8-dev';
 
     /**
      * The base path for the Laravel installation.
@@ -141,9 +141,7 @@ class Application extends Container implements ApplicationContract
         }
 
         $this->registerBaseBindings();
-
         $this->registerBaseServiceProviders();
-
         $this->registerCoreContainerAliases();
     }
 
@@ -169,6 +167,7 @@ class Application extends Container implements ApplicationContract
         $this->instance('app', $this);
 
         $this->instance(Container::class, $this);
+        $this->singleton(Mix::class);
 
         $this->instance(PackageManifest::class, new PackageManifest(
             new Filesystem, $this->basePath(), $this->getCachedPackagesPath()
@@ -471,12 +470,13 @@ class Application extends Container implements ApplicationContract
     /**
      * Get or check the current application environment.
      *
+     * @param  string|array  $environments
      * @return string|bool
      */
-    public function environment()
+    public function environment(...$environments)
     {
-        if (func_num_args() > 0) {
-            $patterns = is_array(func_get_arg(0)) ? func_get_arg(0) : func_get_args();
+        if (count($environments) > 0) {
+            $patterns = is_array($environments[0]) ? $environments[0] : $environments;
 
             return Str::is($patterns, $this['env']);
         }
