@@ -17,6 +17,11 @@
     "config": {
         "sort-packages": true
     },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "5.8-dev"
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
