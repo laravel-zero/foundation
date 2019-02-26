@@ -27,13 +27,6 @@ class RouteListCommand extends Command
     protected $description = 'List all registered routes';
 
     /**
-     * The router instance.
-     *
-     * @var \Illuminate\Routing\Router
-     */
-    protected $router;
-
-    /**
      * An array of all the registered routes.
      *
      * @var \Illuminate\Routing\RouteCollection
@@ -64,7 +57,6 @@ class RouteListCommand extends Command
     {
         parent::__construct();
 
-        $this->router = $router;
         $this->routes = $router->getRoutes();
     }
 
@@ -75,11 +67,15 @@ class RouteListCommand extends Command
      */
     public function handle()
     {
-        if (count($this->routes) === 0) {
+        if (empty($this->routes)) {
             return $this->error("Your application doesn't have any routes.");
         }
 
-        $this->displayRoutes($this->getRoutes());
+        if (empty($routes = $this->getRoutes())) {
+            return $this->error("Your application doesn't have any routes matching the given criteria.");
+        }
+
+        $this->displayRoutes($routes);
     }
 
     /**
