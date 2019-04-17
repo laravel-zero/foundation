@@ -1,10 +1,10 @@
-## About Laravel Zero Foundation
+## Laravel Zero Foundation
 
-This is a mirror from https://github.com/laravel/framework/tree/5.8/src/Illuminate/Foundation
+This is a mirror of `src/Illuminate/Foundation` from [Laravel Framework](https://github.com/laravel/framework).
 
 ## Notes
 
-In this package the class `src/Illuminate/Foundation/Application` doesn't implement Symfonys `HttpKernelInterface`.
+In this package, `Illuminate\Foundation\Application` class doesn't implement `Symfony\Component\HttpKernel\HttpKernelInterface` interface.
 
 ## Support the development
 **Do you like this project? Support it by donating**
@@ -14,4 +14,4 @@ In this package the class `src/Illuminate/Foundation/Application` doesn't implem
 
 ## License
 
-Laravel Zero Foundation is an open-sourced software licensed under the [MIT license](LICENSE.md).
+Laravel Zero Foundation is open-sourced software licensed under the [MIT license](LICENSE.md).
