@@ -5,6 +5,7 @@ namespace Illuminate\Foundation;
 use Closure;
 use RuntimeException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Env;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -28,7 +29,7 @@ class Application extends Container implements ApplicationContract
      *
      * @var string
      */
-    const VERSION = '5.8.8';
+    const VERSION = '6.0-dev';
 
     /**
      * The base path for the Laravel installation.
@@ -519,6 +520,16 @@ class Application extends Container implements ApplicationContract
     }
 
     /**
+     * Determine if application is in production environment.
+     *
+     * @return bool
+     */
+    public function isProduction()
+    {
+        return $this['env'] === 'production';
+    }
+
+    /**
      * Detect the application's current environment.
      *
      * @param  \Closure  $callback
@@ -538,8 +549,8 @@ class Application extends Container implements ApplicationContract
      */
     public function runningInConsole()
     {
-        if (isset($_ENV['APP_RUNNING_IN_CONSOLE'])) {
-            return $_ENV['APP_RUNNING_IN_CONSOLE'] === 'true';
+        if (Env::get('APP_RUNNING_IN_CONSOLE') !== null) {
+            return Env::get('APP_RUNNING_IN_CONSOLE') === true;
         }
 
         return php_sapi_name() === 'cli' || php_sapi_name() === 'phpdbg';
@@ -882,7 +893,7 @@ class Application extends Container implements ApplicationContract
      */
     public function getCachedServicesPath()
     {
-        return $_ENV['APP_SERVICES_CACHE'] ?? $this->bootstrapPath().'/cache/services.php';
+        return Env::get('APP_SERVICES_CACHE', $this->bootstrapPath().'/cache/services.php');
     }
 
     /**
@@ -892,7 +903,7 @@ class Application extends Container implements ApplicationContract
      */
     public function getCachedPackagesPath()
     {
-        return $_ENV['APP_PACKAGES_CACHE'] ?? $this->bootstrapPath().'/cache/packages.php';
+        return Env::get('APP_PACKAGES_CACHE', $this->bootstrapPath().'/cache/packages.php');
     }
 
     /**
@@ -912,7 +923,7 @@ class Application extends Container implements ApplicationContract
      */
     public function getCachedConfigPath()
     {
-        return $_ENV['APP_CONFIG_CACHE'] ?? $this->bootstrapPath().'/cache/config.php';
+        return Env::get('APP_CONFIG_CACHE', $this->bootstrapPath().'/cache/config.php');
     }
 
     /**
@@ -932,7 +943,27 @@ class Application extends Container implements ApplicationContract
      */
     public function getCachedRoutesPath()
     {
-        return $_ENV['APP_ROUTES_CACHE'] ?? $this->bootstrapPath().'/cache/routes.php';
+        return Env::get('APP_ROUTES_CACHE', $this->bootstrapPath().'/cache/routes.php');
+    }
+
+    /**
+     * Determine if the application events are cached.
+     *
+     * @return bool
+     */
+    public function eventsAreCached()
+    {
+        return $this['files']->exists($this->getCachedEventsPath());
+    }
+
+    /**
+     * Get the path to the events cache file.
+     *
+     * @return string
+     */
+    public function getCachedEventsPath()
+    {
+        return Env::get('APP_EVENTS_CACHE', $this->bootstrapPath().'/cache/events.php');
     }
 
     /**
@@ -1097,12 +1128,12 @@ class Application extends Container implements ApplicationContract
     public function registerCoreContainerAliases()
     {
         foreach ([
-            'app'                  => [\Illuminate\Foundation\Application::class, \Illuminate\Contracts\Container\Container::class, \Illuminate\Contracts\Foundation\Application::class,  \Psr\Container\ContainerInterface::class],
+            'app'                  => [self::class, \Illuminate\Contracts\Container\Container::class, \Illuminate\Contracts\Foundation\Application::class,  \Psr\Container\ContainerInterface::class],
             'auth'                 => [\Illuminate\Auth\AuthManager::class, \Illuminate\Contracts\Auth\Factory::class],
             'auth.driver'          => [\Illuminate\Contracts\Auth\Guard::class],
             'blade.compiler'       => [\Illuminate\View\Compilers\BladeCompiler::class],
             'cache'                => [\Illuminate\Cache\CacheManager::class, \Illuminate\Contracts\Cache\Factory::class],
-            'cache.store'          => [\Illuminate\Cache\Repository::class, \Illuminate\Contracts\Cache\Repository::class],
+            'cache.store'          => [\Illuminate\Cache\Repository::class, \Illuminate\Contracts\Cache\Repository::class, \Psr\SimpleCache\CacheInterface::class],
             'config'               => [\Illuminate\Config\Repository::class, \Illuminate\Contracts\Config\Repository::class],
             'cookie'               => [\Illuminate\Cookie\CookieJar::class, \Illuminate\Contracts\Cookie\Factory::class, \Illuminate\Contracts\Cookie\QueueingFactory::class],
             'encrypter'            => [\Illuminate\Encryption\Encrypter::class, \Illuminate\Contracts\Encryption\Encrypter::class],
