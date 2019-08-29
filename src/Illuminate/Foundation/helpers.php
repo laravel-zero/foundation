@@ -875,7 +875,7 @@ if (! function_exists('trans')) {
             return app('translator');
         }
 
-        return app('translator')->trans($key, $replace, $locale);
+        return app('translator')->get($key, $replace, $locale);
     }
 }
 
@@ -884,14 +884,14 @@ if (! function_exists('trans_choice')) {
      * Translates the given message based on a count.
      *
      * @param  string  $key
-     * @param  int|array|\Countable  $number
+     * @param  \Countable|int|array  $number
      * @param  array   $replace
      * @param  string|null  $locale
      * @return string
      */
     function trans_choice($key, $number, array $replace = [], $locale = null)
     {
-        return app('translator')->transChoice($key, $number, $replace, $locale);
+        return app('translator')->choice($key, $number, $replace, $locale);
     }
 }
 
