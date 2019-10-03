@@ -6,6 +6,8 @@ This is a mirror of `src/Illuminate/Foundation` from [Laravel Framework](https:/
 
 In this package, `Illuminate\Foundation\Application` class doesn't implement `Symfony\Component\HttpKernel\HttpKernelInterface` interface.
 
+Also in this package, the `Console\Kernel::load()` method does not use the canonicalized absolute path to the `app` directory.
+
 ## Support the development
 **Do you like this project? Support it by donating**
 
