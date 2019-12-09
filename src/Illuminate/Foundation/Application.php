@@ -9,6 +9,7 @@ use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
 use Illuminate\Events\EventServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
+use Illuminate\Foundation\Events\LocaleUpdated;
 use Illuminate\Http\Request;
 use Illuminate\Log\LogServiceProvider;
 use Illuminate\Routing\RoutingServiceProvider;
@@ -29,7 +30,7 @@ class Application extends Container implements ApplicationContract
      *
      * @var string
      */
-    const VERSION = '6.0.4';
+    const VERSION = '6.6.2';
 
     /**
      * The base path for the Laravel installation.
@@ -588,7 +589,7 @@ class Application extends Container implements ApplicationContract
      * Register a service provider with the application.
      *
      * @param  \Illuminate\Support\ServiceProvider|string  $provider
-     * @param  bool   $force
+     * @param  bool  $force
      * @return \Illuminate\Support\ServiceProvider
      */
     public function register($provider, $force = false)
@@ -997,9 +998,9 @@ class Application extends Container implements ApplicationContract
     /**
      * Throw an HttpException with the given data.
      *
-     * @param  int     $code
+     * @param  int  $code
      * @param  string  $message
-     * @param  array   $headers
+     * @param  array  $headers
      * @return void
      *
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
@@ -1124,7 +1125,7 @@ class Application extends Container implements ApplicationContract
 
         $this['translator']->setLocale($locale);
 
-        $this['events']->dispatch(new Events\LocaleUpdated($locale));
+        $this['events']->dispatch(new LocaleUpdated($locale));
     }
 
     /**

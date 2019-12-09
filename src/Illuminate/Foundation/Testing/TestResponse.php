@@ -90,6 +90,23 @@ class TestResponse
     }
 
     /**
+     * Assert that the response has a 201 status code.
+     *
+     * @return $this
+     */
+    public function assertCreated()
+    {
+        $actual = $this->getStatusCode();
+
+        PHPUnit::assertTrue(
+            201 === $actual,
+            'Response status code ['.$actual.'] does not match expected 201 status code.'
+        );
+
+        return $this;
+    }
+
+    /**
      * Assert that the response has the given status code and no content.
      *
      * @param  int  $status
@@ -484,11 +501,16 @@ class TestResponse
      *
      * @param  string  $path
      * @param  mixed  $expect
+     * @param  bool  $strict
      * @return $this
      */
-    public function assertJsonPath($path, $expect)
+    public function assertJsonPath($path, $expect, $strict = false)
     {
-        PHPUnit::assertEquals($expect, $this->json($path));
+        if ($strict) {
+            PHPUnit::assertSame($expect, $this->json($path));
+        } else {
+            PHPUnit::assertEquals($expect, $this->json($path));
+        }
 
         return $this;
     }
@@ -541,7 +563,7 @@ class TestResponse
      * Assert that the response does not contain the given JSON fragment.
      *
      * @param  array  $data
-     * @param  bool   $exact
+     * @param  bool  $exact
      * @return $this
      */
     public function assertJsonMissing(array $data, $exact = false)
@@ -803,7 +825,7 @@ class TestResponse
     /**
      * Assert that the response view equals the given value.
      *
-     * @param  string $value
+     * @param  string  $value
      * @return $this
      */
     public function assertViewIs($value)
