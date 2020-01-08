@@ -30,7 +30,7 @@ class Application extends Container implements ApplicationContract
      *
      * @var string
      */
-    const VERSION = '6.7.0';
+    const VERSION = '6.10.0';
 
     /**
      * The base path for the Laravel installation.
@@ -129,6 +129,13 @@ class Application extends Container implements ApplicationContract
      * @var string
      */
     protected $environmentFile = '.env';
+
+    /**
+     * Indicates if the application is running in the console.
+     *
+     * @var bool|null
+     */
+    protected $isRunningInConsole;
 
     /**
      * The application namespace.
@@ -550,11 +557,11 @@ class Application extends Container implements ApplicationContract
      */
     public function runningInConsole()
     {
-        if (Env::get('APP_RUNNING_IN_CONSOLE') !== null) {
-            return Env::get('APP_RUNNING_IN_CONSOLE') === true;
+        if ($this->isRunningInConsole === null) {
+            $this->isRunningInConsole = Env::get('APP_RUNNING_IN_CONSOLE') ?? (\PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg');
         }
 
-        return php_sapi_name() === 'cli' || php_sapi_name() === 'phpdbg';
+        return $this->isRunningInConsole;
     }
 
     /**
@@ -576,7 +583,7 @@ class Application extends Container implements ApplicationContract
     {
         $providers = Collection::make($this->config['app.providers'])
                         ->partition(function ($provider) {
-                            return Str::startsWith($provider, 'Illuminate\\');
+                            return strpos($provider, 'Illuminate\\') === 0;
                         });
 
         $providers->splice(1, 0, [$this->make(PackageManifest::class)->providers()]);
@@ -1004,6 +1011,7 @@ class Application extends Container implements ApplicationContract
      * @return void
      *
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function abort($code, $message = '', array $headers = [])
     {
@@ -1176,6 +1184,7 @@ class Application extends Container implements ApplicationContract
             'queue.failer'         => [\Illuminate\Queue\Failed\FailedJobProviderInterface::class],
             'redirect'             => [\Illuminate\Routing\Redirector::class],
             'redis'                => [\Illuminate\Redis\RedisManager::class, \Illuminate\Contracts\Redis\Factory::class],
+            'redis.connection'     => [\Illuminate\Redis\Connections\Connection::class, \Illuminate\Contracts\Redis\Connection::class],
             'request'              => [\Illuminate\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class],
             'router'               => [\Illuminate\Routing\Router::class, \Illuminate\Contracts\Routing\Registrar::class, \Illuminate\Contracts\Routing\BindingRegistrar::class],
             'session'              => [\Illuminate\Session\SessionManager::class],
