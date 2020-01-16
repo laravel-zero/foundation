@@ -5,6 +5,8 @@ namespace Illuminate\Foundation;
 use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
+use Illuminate\Contracts\Foundation\CachesConfiguration;
+use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
 use Illuminate\Events\EventServiceProvider;
 use Illuminate\Filesystem\Filesystem;
@@ -23,14 +25,14 @@ use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class Application extends Container implements ApplicationContract
+class Application extends Container implements ApplicationContract, CachesConfiguration, CachesRoutes
 {
     /**
      * The Laravel framework version.
      *
      * @var string
      */
-    const VERSION = '6.12.0';
+    const VERSION = '7.x-dev';
 
     /**
      * The base path for the Laravel installation.
@@ -1176,6 +1178,7 @@ class Application extends Container implements ApplicationContract
             'hash.driver'          => [\Illuminate\Contracts\Hashing\Hasher::class],
             'translator'           => [\Illuminate\Translation\Translator::class, \Illuminate\Contracts\Translation\Translator::class],
             'log'                  => [\Illuminate\Log\LogManager::class, \Psr\Log\LoggerInterface::class],
+            'mail.manager'         => [\Illuminate\Mail\MailManager::class, \Illuminate\Contracts\Mail\Factory::class],
             'mailer'               => [\Illuminate\Mail\Mailer::class, \Illuminate\Contracts\Mail\Mailer::class, \Illuminate\Contracts\Mail\MailQueue::class],
             'auth.password'        => [\Illuminate\Auth\Passwords\PasswordBrokerManager::class, \Illuminate\Contracts\Auth\PasswordBrokerFactory::class],
             'auth.password.broker' => [\Illuminate\Auth\Passwords\PasswordBroker::class, \Illuminate\Contracts\Auth\PasswordBroker::class],
