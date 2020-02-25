@@ -30,7 +30,7 @@ class Application extends Container implements ApplicationContract
      *
      * @var string
      */
-    const VERSION = '6.12.0';
+    const VERSION = '6.17.0';
 
     /**
      * The base path for the Laravel installation.
@@ -1216,6 +1216,7 @@ class Application extends Container implements ApplicationContract
         $this->reboundCallbacks = [];
         $this->serviceProviders = [];
         $this->resolvingCallbacks = [];
+        $this->terminatingCallbacks = [];
         $this->afterResolvingCallbacks = [];
         $this->globalResolvingCallbacks = [];
     }
