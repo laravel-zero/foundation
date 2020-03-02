@@ -249,13 +249,7 @@ if (! function_exists('cache')) {
             );
         }
 
-        if (! isset($arguments[1])) {
-            throw new Exception(
-                'You must specify an expiration time when setting a value in the cache.'
-            );
-        }
-
-        return app('cache')->put(key($arguments[0]), reset($arguments[0]), $arguments[1]);
+        return app('cache')->put(key($arguments[0]), reset($arguments[0]), $arguments[1] ?? null);
     }
 }
 
@@ -909,7 +903,7 @@ if (! function_exists('url')) {
     /**
      * Generate a url for the application.
      *
-     * @param  string  $path
+     * @param  string|null  $path
      * @param  mixed  $parameters
      * @param  bool|null  $secure
      * @return \Illuminate\Contracts\Routing\UrlGenerator|string

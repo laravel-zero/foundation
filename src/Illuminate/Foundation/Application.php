@@ -1219,6 +1219,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
         $this->reboundCallbacks = [];
         $this->serviceProviders = [];
         $this->resolvingCallbacks = [];
+        $this->terminatingCallbacks = [];
         $this->afterResolvingCallbacks = [];
         $this->globalResolvingCallbacks = [];
     }
