@@ -35,6 +35,11 @@ class Application extends Container implements ApplicationContract, CachesConfig
     const VERSION = '8.15.0';
 
     /**
+     * Copied from HttpKernelInterface, which this class no longer extends.
+     */
+    const MASTER_REQUEST = 1;
+
+    /**
      * The base path for the Laravel installation.
      *
      * @var string
