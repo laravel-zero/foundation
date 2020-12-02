@@ -36,6 +36,8 @@ class Application extends Container implements ApplicationContract, CachesConfig
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
+     *
+     * @see \Symfony\Component\HttpKernel\HttpKernelInterface
      */
     const MASTER_REQUEST = 1;
 
