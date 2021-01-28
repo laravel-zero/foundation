@@ -32,7 +32,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '8.23.1';
+    const VERSION = '8.25.0';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
@@ -117,6 +117,13 @@ class Application extends Container implements ApplicationContract, CachesConfig
      * @var string
      */
     protected $databasePath;
+
+    /**
+     * The custom language file path defined by the developer.
+     *
+     * @var string
+     */
+    protected $langPath;
 
     /**
      * The custom storage path defined by the developer.
@@ -413,7 +420,30 @@ class Application extends Container implements ApplicationContract, CachesConfig
      */
     public function langPath()
     {
-        return $this->resourcePath().DIRECTORY_SEPARATOR.'lang';
+        if ($this->langPath) {
+            return $this->langPath;
+        }
+
+        if (is_dir($path = $this->resourcePath().DIRECTORY_SEPARATOR.'lang')) {
+            return $path;
+        }
+
+        return $this->basePath().DIRECTORY_SEPARATOR.'lang';
+    }
+
+    /**
+     * Set the language file directory.
+     *
+     * @param  string  $path
+     * @return $this
+     */
+    public function useLangPath($path)
+    {
+        $this->langPath = $path;
+
+        $this->instance('path.lang', $path);
+
+        return $this;
     }
 
     /**
