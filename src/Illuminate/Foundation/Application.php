@@ -32,7 +32,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '8.25.0';
+    const VERSION = '8.27.0';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
@@ -566,7 +566,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
     }
 
     /**
-     * Determine if application is in local environment.
+     * Determine if the application is in the local environment.
      *
      * @return bool
      */
@@ -576,7 +576,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
     }
 
     /**
-     * Determine if application is in production environment.
+     * Determine if the application is in the production environment.
      *
      * @return bool
      */
@@ -1266,7 +1266,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
     }
 
     /**
-     * Determine if application locale is the given locale.
+     * Determine if the application locale is the given locale.
      *
      * @param  string  $locale
      * @return bool
