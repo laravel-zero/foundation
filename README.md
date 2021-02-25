@@ -9,6 +9,8 @@ The constant `MASTER_REQUEST` is copied in from `HttpKernelInterface`.
 
 Also in this package, the `Console\Kernel::load()` method does not use the canonicalized absolute path to the `app` directory.
 
+The `Illuminate\Foundation\Testing\TestCase` also has been modified to only run the queue teardown when the `Queue` class exists.
+
 ## Support the development
 **Do you like this project? Support it by donating**
 

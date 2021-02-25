@@ -200,7 +200,9 @@ abstract class TestCase extends BaseTestCase
 
         Artisan::forgetBootstrappers();
 
-        Queue::createPayloadUsing(null);
+        if (class_exists(Queue::class)) {
+            Queue::createPayloadUsing(null);
+        }
 
         if ($this->callbackException) {
             throw $this->callbackException;
