@@ -103,6 +103,7 @@ class Handler implements ExceptionHandlerContract
      * @var string[]
      */
     protected $dontFlash = [
+        'current_password',
         'password',
         'password_confirmation',
     ];
@@ -277,6 +278,10 @@ class Handler implements ExceptionHandlerContract
      */
     protected function exceptionContext(Throwable $e)
     {
+        if (method_exists($e, 'context')) {
+            return $e->context();
+        }
+
         return [];
     }
 
