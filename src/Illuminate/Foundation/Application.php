@@ -32,7 +32,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '8.35.1';
+    const VERSION = '8.36.0';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
@@ -1099,7 +1099,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      */
     public function isDownForMaintenance()
     {
-        return is_file($this->storagePath().'/framework/down');
+        return file_exists($this->storagePath().'/framework/down');
     }
 
     /**
