@@ -32,7 +32,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '8.49.2';
+    const VERSION = '8.53.1';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
@@ -644,7 +644,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      */
     public function registerConfiguredProviders()
     {
-        $providers = Collection::make($this->config['app.providers'])
+        $providers = Collection::make($this->make('config')->get('app.providers'))
                         ->partition(function ($provider) {
                             return strpos($provider, 'Illuminate\\') === 0;
                         });
