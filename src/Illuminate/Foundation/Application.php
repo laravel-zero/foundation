@@ -32,7 +32,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '8.55.0';
+    const VERSION = '8.61.0';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
@@ -357,7 +357,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
     /**
      * Get the base path of the Laravel installation.
      *
-     * @param  string  $path Optionally, a path to append to the base path
+     * @param  string  $path
      * @return string
      */
     public function basePath($path = '')
@@ -368,7 +368,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
     /**
      * Get the path to the bootstrap directory.
      *
-     * @param  string  $path Optionally, a path to append to the bootstrap path
+     * @param  string  $path
      * @return string
      */
     public function bootstrapPath($path = '')
@@ -379,7 +379,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
     /**
      * Get the path to the application configuration files.
      *
-     * @param  string  $path Optionally, a path to append to the config path
+     * @param  string  $path
      * @return string
      */
     public function configPath($path = '')
@@ -390,7 +390,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
     /**
      * Get the path to the database directory.
      *
-     * @param  string  $path Optionally, a path to append to the database path
+     * @param  string  $path
      * @return string
      */
     public function databasePath($path = '')
