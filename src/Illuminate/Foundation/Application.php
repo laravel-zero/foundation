@@ -32,7 +32,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '8.61.0';
+    const VERSION = '8.62.0';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
@@ -964,6 +964,8 @@ class Application extends Container implements ApplicationContract, CachesConfig
 
     /**
      * {@inheritdoc}
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handle(SymfonyRequest $request, int $type = self::MASTER_REQUEST, bool $catch = true)
     {
