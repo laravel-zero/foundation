@@ -41,7 +41,7 @@ class Inspiring
             'Smile, breathe, and go slowly. - Thich Nhat Hanh',
             'The only way to do great work is to love what you do. - Steve Jobs',
             'The whole future lies in uncertainty: live immediately. - Seneca',
-            'Very little is needed to make a happy life. - Marcus Antoninus',
+            'Very little is needed to make a happy life. - Marcus Aurelius',
             'Waste no more time arguing what a good man should be, be one. - Marcus Aurelius',
             'Well begun is half done. - Aristotle',
             'When there is no desire, all things are at peace. - Laozi',
@@ -50,6 +50,7 @@ class Inspiring
             'Breathing in, I calm body and mind. Breathing out, I smile. - Thich Nhat Hanh',
             'Life is available only in the present moment. - Thich Nhat Hanh',
             'The best way to take care of the future is to take care of the present moment. - Thich Nhat Hanh',
+            'Nothing in life is to be feared, it is only to be understood. Now is the time to understand more, so that we may fear less. - Marie Curie',
         ])->random();
     }
 }
