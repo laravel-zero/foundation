@@ -32,7 +32,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '8.73.0';
+    const VERSION = '8.74.0';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
@@ -635,6 +635,16 @@ class Application extends Container implements ApplicationContract, CachesConfig
     public function runningUnitTests()
     {
         return $this->bound('env') && $this['env'] === 'testing';
+    }
+
+    /**
+     * Determine if the application is running with debug mode enabled.
+     *
+     * @return bool
+     */
+    public function hasDebugModeEnabled()
+    {
+        return (bool) $this['config']->get('app.debug');
     }
 
     /**
