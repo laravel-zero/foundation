@@ -4,7 +4,7 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0"
+        "php": "^8.0"
     },
     "autoload": {
         "files": [
@@ -19,7 +19,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "8.x-dev"
+            "dev-main": "9.x-dev"
         }
     },
     "minimum-stability": "dev",
