@@ -98,7 +98,7 @@ class RouteListCommand extends Command
     {
         $this->router->flushMiddlewareGroups();
 
-        if (empty($this->router->getRoutes())) {
+        if (! $this->router->getRoutes()->count()) {
             return $this->error("Your application doesn't have any routes.");
         }
 
@@ -120,8 +120,10 @@ class RouteListCommand extends Command
             return $this->getRouteInformation($route);
         })->filter()->all();
 
-        if (($sort = $this->option('sort')) !== 'precedence') {
+        if (($sort = $this->option('sort')) !== null) {
             $routes = $this->sortRoutes($sort, $routes);
+        } else {
+            $routes = $this->sortRoutes('uri', $routes);
         }
 
         if ($this->option('reverse')) {
@@ -212,9 +214,10 @@ class RouteListCommand extends Command
      */
     protected function filterRoute(array $route)
     {
-        if (($this->option('name') && ! str_contains($route['name'], $this->option('name'))) ||
-            $this->option('path') && ! str_contains($route['uri'], $this->option('path')) ||
-            $this->option('method') && ! str_contains($route['method'], strtoupper($this->option('method')))) {
+        if (($this->option('name') && ! Str::contains($route['name'], $this->option('name'))) ||
+            ($this->option('path') && ! Str::contains($route['uri'], $this->option('path'))) ||
+            ($this->option('method') && ! Str::contains($route['method'], strtoupper($this->option('method')))) ||
+            ($this->option('domain') && ! Str::contains($route['domain'], $this->option('domain')))) {
             return;
         }
 
@@ -300,7 +303,7 @@ class RouteListCommand extends Command
             fn ($route) => array_merge($route, [
                 'action' => $this->formatActionForCli($route),
                 'method' => $route['method'] == 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS' ? 'ANY' : $route['method'],
-                'uri' => $route['domain'] ? ($route['domain'].'/'.$route['uri']) : $route['uri'],
+                'uri' => $route['domain'] ? ($route['domain'].'/'.ltrim($route['uri'], '/')) : $route['uri'],
             ]),
         );
 
@@ -418,6 +421,7 @@ class RouteListCommand extends Command
             ['json', null, InputOption::VALUE_NONE, 'Output the route list as JSON'],
             ['method', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by method'],
             ['name', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by name'],
+            ['domain', null, InputOption::VALUE_OPTIONAL, 'Filter the routes by domain'],
             ['path', null, InputOption::VALUE_OPTIONAL, 'Only show routes matching the given path pattern'],
             ['except-path', null, InputOption::VALUE_OPTIONAL, 'Do not display the routes matching the given path pattern'],
             ['reverse', 'r', InputOption::VALUE_NONE, 'Reverse the ordering of the routes'],
