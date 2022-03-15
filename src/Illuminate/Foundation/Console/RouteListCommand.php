@@ -223,13 +223,31 @@ class RouteListCommand extends Command
                   str_contains($route->action['uses'], 'SerializableClosure')) {
             return false;
         } elseif (is_string($route->action['uses'])) {
-            $path = (new ReflectionClass(explode('@', $route->action['uses'])[0]))
+            if ($this->isFrameworkController($route)) {
+                return false;
+            }
+
+            $path = (new ReflectionClass($route->getControllerClass()))
                                 ->getFileName();
         } else {
             return false;
         }
 
         return str_starts_with($path, base_path('vendor'));
+    }
+
+    /**
+     * Determine if the route uses a framework controller.
+     *
+     * @param  \Illuminate\Routing\Route  $route
+     * @return bool
+     */
+    protected function isFrameworkController(Route $route)
+    {
+        return in_array($route->getControllerClass(), [
+            '\Illuminate\Routing\RedirectController',
+            '\Illuminate\Routing\ViewController',
+        ], true);
     }
 
     /**
@@ -240,10 +258,10 @@ class RouteListCommand extends Command
      */
     protected function filterRoute(array $route)
     {
-        if (($this->option('name') && ! Str::contains($route['name'], $this->option('name'))) ||
+        if (($this->option('name') && ! Str::contains((string) $route['name'], $this->option('name'))) ||
             ($this->option('path') && ! Str::contains($route['uri'], $this->option('path'))) ||
             ($this->option('method') && ! Str::contains($route['method'], strtoupper($this->option('method')))) ||
-            ($this->option('domain') && ! Str::contains($route['domain'], $this->option('domain'))) ||
+            ($this->option('domain') && ! Str::contains((string) $route['domain'], $this->option('domain'))) ||
             ($this->option('except-vendor') && $route['vendor'])) {
             return;
         }
@@ -452,7 +470,7 @@ class RouteListCommand extends Command
             ['path', null, InputOption::VALUE_OPTIONAL, 'Only show routes matching the given path pattern'],
             ['except-path', null, InputOption::VALUE_OPTIONAL, 'Do not display the routes matching the given path pattern'],
             ['reverse', 'r', InputOption::VALUE_NONE, 'Reverse the ordering of the routes'],
-            ['sort', null, InputOption::VALUE_OPTIONAL, 'The column (precedence, domain, method, uri, name, action, middleware) to sort by', 'uri'],
+            ['sort', null, InputOption::VALUE_OPTIONAL, 'The column (domain, method, uri, name, action, middleware) to sort by', 'uri'],
             ['except-vendor', null, InputOption::VALUE_NONE, 'Do not display routes defined by vendor packages'],
         ];
     }
