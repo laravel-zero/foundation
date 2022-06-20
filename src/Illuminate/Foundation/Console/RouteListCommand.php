@@ -266,7 +266,7 @@ class RouteListCommand extends Command
             ($this->option('path') && ! Str::contains($route['uri'], $this->option('path'))) ||
             ($this->option('method') && ! Str::contains($route['method'], strtoupper($this->option('method')))) ||
             ($this->option('domain') && ! Str::contains((string) $route['domain'], $this->option('domain'))) ||
-            ($this->option('except-vendor') && $route['vendor'])) ||
+            ($this->option('except-vendor') && $route['vendor']) ||
             ($this->option('only-vendor') && ! $route['vendor'])) {
             return;
         }
