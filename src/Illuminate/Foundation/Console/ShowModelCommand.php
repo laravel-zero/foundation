@@ -2,20 +2,24 @@
 
 namespace Illuminate\Foundation\Console;
 
+use BackedEnum;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Types\DecimalType;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Console\DatabaseInspectionCommand;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
 use SplFileObject;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Output\OutputInterface;
+use UnitEnum;
 
 #[AsCommand(name: 'model:show')]
-class ShowModelCommand extends Command
+class ShowModelCommand extends DatabaseInspectionCommand
 {
     /**
      * The console command name.
@@ -77,10 +81,8 @@ class ShowModelCommand extends Command
      */
     public function handle()
     {
-        if (! interface_exists('Doctrine\DBAL\Driver')) {
-            return $this->components->error(
-                'Displaying model information requires [doctrine/dbal].'
-            );
+        if (! $this->ensureDependenciesExist()) {
+            return 1;
         }
 
         $class = $this->qualifyModel($this->argument('model'));
@@ -113,6 +115,7 @@ class ShowModelCommand extends Command
     protected function getAttributes($model)
     {
         $schema = $model->getConnection()->getDoctrineSchemaManager();
+        $this->registerTypeMappings($schema->getDatabasePlatform());
         $table = $model->getConnection()->getTablePrefix().$model->getTable();
         $columns = $schema->listTableColumns($table);
         $indexes = $schema->listTableIndexes($table);
@@ -146,9 +149,10 @@ class ShowModelCommand extends Command
         $class = new ReflectionClass($model);
 
         return collect($class->getMethods())
-            ->reject(fn (ReflectionMethod $method) => $method->isStatic()
-                || $method->isAbstract()
-                || $method->getDeclaringClass()->getName() !== get_class($model)
+            ->reject(
+                fn (ReflectionMethod $method) => $method->isStatic()
+                    || $method->isAbstract()
+                    || $method->getDeclaringClass()->getName() !== get_class($model)
             )
             ->mapWithKeys(function (ReflectionMethod $method) use ($model) {
                 if (preg_match('/^get(.*)Attribute$/', $method->getName(), $matches) === 1) {
@@ -185,9 +189,10 @@ class ShowModelCommand extends Command
     {
         return collect(get_class_methods($model))
             ->map(fn ($method) => new ReflectionMethod($model, $method))
-            ->reject(fn (ReflectionMethod $method) => $method->isStatic()
-                || $method->isAbstract()
-                || $method->getDeclaringClass()->getName() !== get_class($model)
+            ->reject(
+                fn (ReflectionMethod $method) => $method->isStatic()
+                    || $method->isAbstract()
+                    || $method->getDeclaringClass()->getName() !== get_class($model)
             )
             ->filter(function (ReflectionMethod $method) {
                 $file = new SplFileObject($method->getFileName());
@@ -201,16 +206,21 @@ class ShowModelCommand extends Command
                 return collect($this->relationMethods)
                     ->contains(fn ($relationMethod) => str_contains($code, '$this->'.$relationMethod.'('));
             })
-            ->values()
             ->map(function (ReflectionMethod $method) use ($model) {
                 $relation = $method->invoke($model);
+
+                if (! $relation instanceof Relation) {
+                    return null;
+                }
 
                 return [
                     'name' => $method->getName(),
                     'type' => Str::afterLast(get_class($relation), '\\'),
                     'related' => get_class($relation->getRelated()),
                 ];
-            });
+            })
+            ->filter()
+            ->values();
     }
 
     /**
@@ -345,10 +355,10 @@ class ShowModelCommand extends Command
      */
     protected function getCastsWithDates($model)
     {
-        return collect([
-            ...collect($model->getDates())->flip()->map(fn () => 'datetime'),
-            ...$model->getCasts(),
-        ]);
+        return collect($model->getDates())
+            ->flip()
+            ->map(fn () => 'datetime')
+            ->merge($model->getCasts());
     }
 
     /**
@@ -380,11 +390,17 @@ class ShowModelCommand extends Command
      *
      * @param  \Doctrine\DBAL\Schema\Column  $column
      * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return string|null
+     * @return mixed|null
      */
     protected function getColumnDefault($column, $model)
     {
-        return $model->getAttributes()[$column->getName()] ?? $column->getDefault();
+        $attributeDefault = $model->getAttributes()[$column->getName()] ?? null;
+
+        return match (true) {
+            $attributeDefault instanceof BackedEnum => $attributeDefault->value,
+            $attributeDefault instanceof UnitEnum => $attributeDefault->name,
+            default => $attributeDefault ?? $column->getDefault(),
+        };
     }
 
     /**
@@ -431,7 +447,7 @@ class ShowModelCommand extends Command
      */
     protected function qualifyModel(string $model)
     {
-        if (class_exists($model)) {
+        if (str_contains($model, '\\') && class_exists($model)) {
             return $model;
         }
 

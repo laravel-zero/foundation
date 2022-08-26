@@ -25,6 +25,15 @@ class FoundationServiceProvider extends AggregateServiceProvider
     ];
 
     /**
+     * The singletons to register into the container.
+     *
+     * @var array
+     */
+    public $singletons = [
+        Vite::class => Vite::class,
+    ];
+
+    /**
      * Boot the service provider.
      *
      * @return void

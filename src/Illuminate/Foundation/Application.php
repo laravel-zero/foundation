@@ -34,7 +34,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '9.21.0';
+    const VERSION = '9.26.1';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
@@ -702,6 +702,8 @@ class Application extends Container implements ApplicationContract, CachesConfig
 
         if (property_exists($provider, 'singletons')) {
             foreach ($provider->singletons as $key => $value) {
+                $key = is_int($key) ? $value : $key;
+
                 $this->singleton($key, $value);
             }
         }
