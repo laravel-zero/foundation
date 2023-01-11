@@ -21,6 +21,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Env;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Support\Traits\Macroable;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -29,12 +30,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Application extends Container implements ApplicationContract, CachesConfiguration, CachesRoutes
 {
+    use Macroable;
+
     /**
      * The Laravel framework version.
      *
      * @var string
      */
-    const VERSION = '9.26.1';
+    const VERSION = '9.47.0';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
