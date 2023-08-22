@@ -364,7 +364,7 @@ class Kernel implements KernelContract
         return $namespace.str_replace(
             ['/', '.php'],
             ['\\', ''],
-            Str::after($command->getPathname(), app_path().DIRECTORY_SEPARATOR)
+            Str::after($file->getPathname(), app_path().DIRECTORY_SEPARATOR)
         );
     }
 
