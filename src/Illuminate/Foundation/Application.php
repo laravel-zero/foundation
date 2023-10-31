@@ -36,7 +36,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '10.28.0';
+    const VERSION = '10.30.0';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
@@ -712,6 +712,24 @@ class Application extends Container implements ApplicationContract, CachesConfig
         }
 
         return $this->isRunningInConsole;
+    }
+
+    /**
+     * Determine if the application is running any of the given console commands.
+     *
+     * @param  string|array  ...$commands
+     * @return bool
+     */
+    public function runningConsoleCommand(...$commands)
+    {
+        if (! $this->runningInConsole()) {
+            return false;
+        }
+
+        return in_array(
+            $_SERVER['argv'][1] ?? null,
+            is_array($commands[0]) ? $commands[0] : $commands
+        );
     }
 
     /**
