@@ -4,6 +4,7 @@ namespace Illuminate\Foundation\Testing\Concerns;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Application as Artisan;
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bootstrap\HandleExceptions;
 use Illuminate\Foundation\Bootstrap\RegisterProviders;
@@ -166,10 +167,11 @@ trait InteractsWithTestCaseLifecycle
         Component::forgetComponentsResolver();
         Component::forgetFactory();
         ConvertEmptyStringsToNull::flushState();
+        class_exists(EncryptCookies::class) && EncryptCookies::flushState();
         HandleExceptions::flushState();
         Once::flush();
         PreventRequestsDuringMaintenance::flushState();
-        Queue::createPayloadUsing(null);
+        class_exists(Queue::class) && Queue::createPayloadUsing(null);
         RegisterProviders::flushState();
         Sleep::fake(false);
         TrimStrings::flushState();
