@@ -175,8 +175,8 @@ trait InteractsWithTestCaseLifecycle
         RegisterProviders::flushState();
         Sleep::fake(false);
         TrimStrings::flushState();
-        TrustProxies::flushState();
-        TrustHosts::flushState();
+        class_exists(TrustProxies::class) && TrustProxies::flushState();
+        class_exists(TrustHosts::class) && TrustHosts::flushState();
         ValidateCsrfToken::flushState();
 
         if ($this->callbackException) {
