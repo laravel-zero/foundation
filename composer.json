@@ -6,6 +6,9 @@
     "require": {
         "php": "^8.1"
     },
+    "require-dev": {
+        "laravel/framework": "^10"
+    },
     "autoload": {
         "files": [
             "src/Illuminate/Foundation/helpers.php"
@@ -21,6 +24,9 @@
         "branch-alias": {
             "dev-main": "10.x-dev"
         }
+    },
+    "scripts": {
+        "sync": "@php bin/sync"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
