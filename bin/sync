@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+
+$workingPath = getcwd();
+
+require __DIR__.'/../vendor/autoload.php';
+
+$files = new Illuminate\Filesystem\Filesystem();
+
+if ($files->isDirectory("{$workingPath}/src/Illuminate/Foundation")) {
+    $files->deleteDirectory("{$workingPath}/src/Illuminate/Foundation");
+}
+
+$files->ensureDirectoryExists("{$workingPath}/src/Illuminate/Foundation");
+
+$files->copyDirectory(
+    "{$workingPath}/vendor/laravel/framework/src/Illuminate/Foundation",
+    "{$workingPath}/src/Illuminate/Foundation"
+);

@@ -27,10 +27,11 @@ use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 use function Illuminate\Filesystem\join_paths;
 
-class Application extends Container implements ApplicationContract, CachesConfiguration, CachesRoutes
+class Application extends Container implements ApplicationContract, CachesConfiguration, CachesRoutes, HttpKernelInterface
 {
     use Macroable;
 
@@ -39,14 +40,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '10.48.8';
-
-    /**
-     * Copied from HttpKernelInterface, which this class no longer extends.
-     *
-     * @see \Symfony\Component\HttpKernel\HttpKernelInterface
-     */
-    const MAIN_REQUEST = 1;
+    const VERSION = '10.48.25';
 
     /**
      * The base path for the Laravel installation.
@@ -541,6 +535,10 @@ class Application extends Container implements ApplicationContract, CachesConfig
             return $this->joinPaths($this->storagePath ?: $_ENV['LARAVEL_STORAGE_PATH'], $path);
         }
 
+        if (isset($_SERVER['LARAVEL_STORAGE_PATH'])) {
+            return $this->joinPaths($this->storagePath ?: $_SERVER['LARAVEL_STORAGE_PATH'], $path);
+        }
+
         return $this->joinPaths($this->storagePath ?: $this->basePath('storage'), $path);
     }
 
@@ -698,7 +696,9 @@ class Application extends Container implements ApplicationContract, CachesConfig
      */
     public function detectEnvironment(Closure $callback)
     {
-        $args = $_SERVER['argv'] ?? null;
+        $args = $this->runningInConsole() && isset($_SERVER['argv'])
+            ? $_SERVER['argv']
+            : null;
 
         return $this['env'] = (new EnvironmentDetector)->detect($callback, $args);
     }
