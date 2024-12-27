@@ -41,7 +41,7 @@ transform([
 
 // Configure `Illuminate\Foundation\Testing\Concerns\InteractsWithTestCaseLifecycle` class
 transform([
-    line('Queue::createPayloadUsing(null);', 2) => line('if (class_exists(Queue::class)) {
+    line('Queue::createPayloadUsing(null);', 2) => PHP_EOL.line('if (class_exists(Queue::class)) {
             Queue::createPayloadUsing(null);
         }'.PHP_EOL, 2),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Testing/Concerns/InteractsWithTestCaseLifecycle.php"));
