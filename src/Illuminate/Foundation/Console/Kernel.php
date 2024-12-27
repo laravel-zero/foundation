@@ -14,8 +14,10 @@ use Illuminate\Contracts\Console\Kernel as KernelContract;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Foundation\Events\Terminating;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Env;
 use Illuminate\Support\InteractsWithTime;
 use Illuminate\Support\Str;
@@ -212,6 +214,8 @@ class Kernel implements KernelContract
      */
     public function terminate($input, $status)
     {
+        $this->events->dispatch(new Terminating);
+
         $this->app->terminate();
 
         if ($this->commandStartedAt === null) {
@@ -387,7 +391,7 @@ class Kernel implements KernelContract
         return $namespace.str_replace(
             ['/', '.php'],
             ['\\', ''],
-            Str::after($file->getPathname(), app_path().DIRECTORY_SEPARATOR),
+            Str::after($file->getPathname(), app_path().DIRECTORY_SEPARATOR)
         );
     }
 
@@ -509,9 +513,9 @@ class Kernel implements KernelContract
     public function bootstrapWithoutBootingProviders()
     {
         $this->app->bootstrapWith(
-            collect($this->bootstrappers())->reject(function ($bootstrapper) {
-                return $bootstrapper === \Illuminate\Foundation\Bootstrap\BootProviders::class;
-            })->all()
+            (new Collection($this->bootstrappers()))
+                ->reject(fn ($bootstrapper) => $bootstrapper === \Illuminate\Foundation\Bootstrap\BootProviders::class)
+                ->all()
         );
     }
 

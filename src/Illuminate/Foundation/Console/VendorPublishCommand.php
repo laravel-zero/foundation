@@ -31,7 +31,7 @@ class VendorPublishCommand extends Command
     /**
      * The provider to publish.
      *
-     * @var string
+     * @var string|null
      */
     protected $provider = null;
 
@@ -309,7 +309,7 @@ class VendorPublishCommand extends Command
      */
     protected function moveManagedFiles($from, $manager)
     {
-        foreach ($manager->listContents('from://', true) as $file) {
+        foreach ($manager->listContents('from://', true)->sortByPath() as $file) {
             $path = Str::after($file['path'], 'from://');
 
             if (
@@ -394,7 +394,7 @@ class VendorPublishCommand extends Command
     }
 
     /**
-     * Intruct the command to not update the dates on migrations when publishing.
+     * Instruct the command to not update the dates on migrations when publishing.
      *
      * @return void
      */

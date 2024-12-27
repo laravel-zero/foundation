@@ -21,6 +21,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\Middleware\TrustHosts;
 use Illuminate\Http\Middleware\TrustProxies;
+use Illuminate\Queue\Console\WorkCommand;
 use Illuminate\Queue\Queue;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Facade;
@@ -167,17 +168,22 @@ trait InteractsWithTestCaseLifecycle
         Component::forgetComponentsResolver();
         Component::forgetFactory();
         ConvertEmptyStringsToNull::flushState();
-        class_exists(EncryptCookies::class) && EncryptCookies::flushState();
+        EncryptCookies::flushState();
         HandleExceptions::flushState();
         Once::flush();
         PreventRequestsDuringMaintenance::flushState();
-        class_exists(Queue::class) && Queue::createPayloadUsing(null);
+
+        if (class_exists(Queue::class)) {
+            Queue::createPayloadUsing(null);
+        }
+
         RegisterProviders::flushState();
         Sleep::fake(false);
         TrimStrings::flushState();
-        class_exists(TrustProxies::class) && TrustProxies::flushState();
-        class_exists(TrustHosts::class) && TrustHosts::flushState();
+        TrustProxies::flushState();
+        TrustHosts::flushState();
         ValidateCsrfToken::flushState();
+        WorkCommand::flushState();
 
         if ($this->callbackException) {
             throw $this->callbackException;
