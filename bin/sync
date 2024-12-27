@@ -17,3 +17,9 @@ $files->copyDirectory(
     "{$workingPath}/vendor/laravel/framework/src/Illuminate/Foundation",
     "{$workingPath}/src/Illuminate/Foundation"
 );
+
+// Remove HTTPKernelInterface from `Application` class
+transform([
+    'use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;'.PHP_EOL.'use Symfony\Component\HttpKernel\HttpKernelInterface;' => 'use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;',
+    'class Application extends Container implements ApplicationContract, CachesConfiguration, CachesRoutes, HttpKernelInterface' => 'class Application extends Container implements ApplicationContract, CachesConfiguration, CachesRoutes',
+], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Application.php"));
