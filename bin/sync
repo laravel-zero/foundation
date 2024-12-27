@@ -11,16 +11,22 @@ function line(string $code, int $tab = 0): string {
     return implode('', [PHP_EOL, str_repeat(' ', ($tab * 4)), $code]);
 }
 
-if ($files->isDirectory("{$workingPath}/src/Illuminate/Foundation")) {
-    $files->deleteDirectory("{$workingPath}/src/Illuminate/Foundation");
-}
+collect([
+    'config',
+    'config-stubs',
+    'src/Illuminate/Foundation',
+])->each(function ($path) use ($files, $workingPath) {
+    $sourcePath = "{$workingPath}/vendor/laravel/framework/{$path}";
+    $destinationPath = "{$workingPath}/{$path}";
 
-$files->ensureDirectoryExists("{$workingPath}/src/Illuminate/Foundation");
+    if ($files->isDirectory($destinationPath)) {
+        $files->deleteDirectory($destinationPath);
+    }
 
-$files->copyDirectory(
-    "{$workingPath}/vendor/laravel/framework/src/Illuminate/Foundation",
-    "{$workingPath}/src/Illuminate/Foundation"
-);
+    $files->ensureDirectoryExists($destinationPath);
+
+    $files->copyDirectory($sourcePath, $destinationPath);
+});
 
 // Configure `Illuminate\Foundation\Application` class
 transform([
