@@ -161,7 +161,10 @@ trait InteractsWithTestCaseLifecycle
         Component::forgetFactory();
         ConvertEmptyStringsToNull::flushState();
         HandleExceptions::forgetApp();
-        Queue::createPayloadUsing(null);
+            if (class_exists(Queue::class)) {
+            Queue::createPayloadUsing(null);
+        }
+
         Sleep::fake(false);
         TrimStrings::flushState();
 
