@@ -35,7 +35,13 @@ transform([
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Application.php"));
 
 // Configure `Illuminate\Foundation\Console\Kernel` class
-//
 transform([
     line('Str::after($file->getRealPath(), realpath(app_path()).DIRECTORY_SEPARATOR)', 3) => line('Str::after($file->getPathname(), app_path().DIRECTORY_SEPARATOR)', 3),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Console/Kernel.php"));
+
+// Configure `Illuminate\Foundation\Testing\Concerns\InteractsWithTestCaseLifecycle` class
+transform([
+    line('Queue::createPayloadUsing(null);', 2) => line('if (class_exists(Queue::class)) {
+            Queue::createPayloadUsing(null);
+        }'.PHP_EOL, 3),
+], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Testing/Concerns/InteractsWithTestCaseLifecycle.php"));
