@@ -22,7 +22,7 @@ $files->copyDirectory(
     "{$workingPath}/src/Illuminate/Foundation"
 );
 
-// Remove HTTPKernelInterface from `Application` class
+// Configure `Illuminate\Foundation\Application` class
 transform([
     'use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;'.PHP_EOL.'use Symfony\Component\HttpKernel\HttpKernelInterface;' => 'use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;',
     'class Application extends Container implements ApplicationContract, CachesConfiguration, CachesRoutes, HttpKernelInterface' => 'class Application extends Container implements ApplicationContract, CachesConfiguration, CachesRoutes',
@@ -33,3 +33,9 @@ transform([
      */
     const MAIN_REQUEST = 1;',
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Application.php"));
+
+// Configure `Illuminate\Foundation\Console\Kernel` class
+//
+transform([
+    line('Str::after($file->getRealPath(), realpath(app_path()).DIRECTORY_SEPARATOR)', 3) => line('Str::after($file->getPathname(), app_path().DIRECTORY_SEPARATOR)', 3),
+], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Console/Kernel.php"));
