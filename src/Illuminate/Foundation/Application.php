@@ -42,6 +42,13 @@ class Application extends Container implements ApplicationContract, CachesConfig
     const VERSION = '10.48.25';
 
     /**
+     * Copied from HttpKernelInterface, which this class no longer extends.
+     *
+     * @see \Symfony\Component\HttpKernel\HttpKernelInterface
+     */
+    const MAIN_REQUEST = 1;
+
+    /**
      * The base path for the Laravel installation.
      *
      * @var string
