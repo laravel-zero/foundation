@@ -7,6 +7,10 @@ require __DIR__.'/../vendor/autoload.php';
 
 $files = new Illuminate\Filesystem\Filesystem();
 
+function line(string $code, int $tab = 0): string {
+    return implode('', [PHP_EOL, str_repeat(' ', ($tab * 4)), $code]);
+}
+
 if ($files->isDirectory("{$workingPath}/src/Illuminate/Foundation")) {
     $files->deleteDirectory("{$workingPath}/src/Illuminate/Foundation");
 }
@@ -22,4 +26,10 @@ $files->copyDirectory(
 transform([
     'use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;'.PHP_EOL.'use Symfony\Component\HttpKernel\HttpKernelInterface;' => 'use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;',
     'class Application extends Container implements ApplicationContract, CachesConfiguration, CachesRoutes, HttpKernelInterface' => 'class Application extends Container implements ApplicationContract, CachesConfiguration, CachesRoutes',
+    line('const VERSION = \''.Illuminate\Foundation\Application::VERSION.'\';', 1) => line('const VERSION = \''.Illuminate\Foundation\Application::VERSION.'\';', 1).PHP_EOL.PHP_EOL.'    /**
+     * Copied from HttpKernelInterface, which this class no longer extends.
+     *
+     * @see \Symfony\Component\HttpKernel\HttpKernelInterface
+     */
+    const MAIN_REQUEST = 1;',
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Application.php"));
