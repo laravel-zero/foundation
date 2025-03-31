@@ -7,7 +7,7 @@
         "php": "^8.2"
     },
     "require-dev": {
-        "laravel/framework": "^11"
+        "laravel/framework": "^12"
     },
     "autoload": {
         "files": [
@@ -22,7 +22,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "11.x-dev"
+            "dev-main": "12.x-dev"
         }
     },
     "scripts": {
