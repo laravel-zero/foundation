@@ -171,7 +171,11 @@ trait InteractsWithTestCaseLifecycle
         Component::forgetFactory();
         ConvertEmptyStringsToNull::flushState();
         Factory::flushState();
-        EncryptCookies::flushState();
+
+        if (class_exists(EncryptCookies::class)) {
+            EncryptCookies::flushState();
+        }
+
         HandleExceptions::flushState();
         Migrator::withoutMigrations([]);
         Once::flush();

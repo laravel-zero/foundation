@@ -50,6 +50,9 @@ transform([
     line('Queue::createPayloadUsing(null);', 2) => PHP_EOL.line('if (class_exists(Queue::class)) {
             Queue::createPayloadUsing(null);
         }'.PHP_EOL, 2),
+    line('EncryptCookies::flushState();', 2) => PHP_EOL.line('if (class_exists(EncryptCookies::class)) {
+            EncryptCookies::flushState();
+        }'.PHP_EOL, 2),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Testing/Concerns/InteractsWithTestCaseLifecycle.php"));
 
 // Configure `config/cache.php` file
