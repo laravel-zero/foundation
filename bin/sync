@@ -47,8 +47,26 @@ transform([
 
 // Configure `Illuminate\Foundation\Testing\Concerns\InteractsWithTestCaseLifecycle` class
 transform([
+    line('EncryptCookies::flushState();', 2) => PHP_EOL.line('if (class_exists(EncryptCookies::class)) {
+            EncryptCookies::flushState();
+        }'.PHP_EOL, 2),
+    line('Factory::flushState();', 2) => PHP_EOL.line('if (class_exists(Factory::class)) {
+            Factory::flushState();
+        }'.PHP_EOL, 2),
+    line('Migrator::withoutMigrations([]);', 2) => PHP_EOL.line('if (class_exists(Migrator::class)) {
+            Migrator::withoutMigrations([]);
+        }'.PHP_EOL, 2),
     line('Queue::createPayloadUsing(null);', 2) => PHP_EOL.line('if (class_exists(Queue::class)) {
             Queue::createPayloadUsing(null);
+        }'.PHP_EOL, 2),
+    line('TrustProxies::flushState();', 2) => PHP_EOL.line('if (class_exists(TrustProxies::class)) {
+            TrustProxies::flushState();
+        }'.PHP_EOL, 2),
+    line('TrustHosts::flushState();', 2) => PHP_EOL.line('if (class_exists(TrustHosts::class)) {
+            TrustHosts::flushState();
+        }'.PHP_EOL, 2),
+    line('WorkCommand::flushState();', 2) => PHP_EOL.line('if (class_exists(WorkCommand::class)) {
+            WorkCommand::flushState();
         }'.PHP_EOL, 2),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Testing/Concerns/InteractsWithTestCaseLifecycle.php"));
 

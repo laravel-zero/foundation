@@ -170,10 +170,22 @@ trait InteractsWithTestCaseLifecycle
         Component::forgetComponentsResolver();
         Component::forgetFactory();
         ConvertEmptyStringsToNull::flushState();
-        Factory::flushState();
-        EncryptCookies::flushState();
+
+        if (class_exists(Factory::class)) {
+            Factory::flushState();
+        }
+
+
+        if (class_exists(EncryptCookies::class)) {
+            EncryptCookies::flushState();
+        }
+
         HandleExceptions::flushState();
-        Migrator::withoutMigrations([]);
+
+        if (class_exists(Migrator::class)) {
+            Migrator::withoutMigrations([]);
+        }
+
         Once::flush();
         PreventRequestsDuringMaintenance::flushState();
 
@@ -184,10 +196,22 @@ trait InteractsWithTestCaseLifecycle
         RegisterProviders::flushState();
         Sleep::fake(false);
         TrimStrings::flushState();
-        TrustProxies::flushState();
-        TrustHosts::flushState();
+
+        if (class_exists(TrustProxies::class)) {
+            TrustProxies::flushState();
+        }
+
+
+        if (class_exists(TrustHosts::class)) {
+            TrustHosts::flushState();
+        }
+
         ValidateCsrfToken::flushState();
-        WorkCommand::flushState();
+
+        if (class_exists(WorkCommand::class)) {
+            WorkCommand::flushState();
+        }
+
 
         if ($this->callbackException) {
             throw $this->callbackException;
