@@ -51,3 +51,8 @@ transform([
             Queue::createPayloadUsing(null);
         }'.PHP_EOL, 2),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Testing/Concerns/InteractsWithTestCaseLifecycle.php"));
+
+// Configure `config/cache.php` file
+transform([
+    line("'default' => env('CACHE_STORE', 'database'),", 1) => line("'default' => env('CACHE_STORE', 'array'),", 1),
+], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/config/cache.php"));
