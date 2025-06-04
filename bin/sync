@@ -56,6 +56,9 @@ transform([
     line('Migrator::withoutMigrations([]);', 2) => PHP_EOL.line('if (class_exists(Migrator::class)) {
             Migrator::withoutMigrations([]);
         }'.PHP_EOL, 2),
+    line('Markdown::flushState();', 2) => PHP_EOL.line('if (class_exists(Markdown::class)) {
+            Markdown::flushState();
+        }'.PHP_EOL, 2),
     line('Queue::createPayloadUsing(null);', 2) => PHP_EOL.line('if (class_exists(Queue::class)) {
             Queue::createPayloadUsing(null);
         }'.PHP_EOL, 2),

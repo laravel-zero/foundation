@@ -23,9 +23,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\Middleware\TrustHosts;
 use Illuminate\Http\Middleware\TrustProxies;
+use Illuminate\Mail\Markdown;
 use Illuminate\Queue\Console\WorkCommand;
 use Illuminate\Queue\Queue;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\EncodedHtmlString;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\ParallelTesting;
 use Illuminate\Support\Once;
@@ -175,12 +177,18 @@ trait InteractsWithTestCaseLifecycle
             Factory::flushState();
         }
 
+        EncodedHtmlString::flushState();
 
         if (class_exists(EncryptCookies::class)) {
             EncryptCookies::flushState();
         }
 
         HandleExceptions::flushState();
+
+        if (class_exists(Markdown::class)) {
+            Markdown::flushState();
+        }
+
 
         if (class_exists(Migrator::class)) {
             Migrator::withoutMigrations([]);
