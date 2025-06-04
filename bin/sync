@@ -40,6 +40,17 @@ transform([
     const MAIN_REQUEST = 1;',
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Application.php"));
 
+// Configure `Illuminate\Foundation\Bootstrap\HandleExceptions` class
+transform([
+    line('protected function shouldIgnoreDeprecationErrors()
+    {', 1) => line('protected function shouldIgnoreDeprecationErrors()
+    {
+        if (static::$app[\'log\'] instanceof \Psr\Log\NullLogger) {
+            return true;
+        }
+', 1),
+], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php"));
+
 // Configure `Illuminate\Foundation\Console\Kernel` class
 transform([
     line('Str::after($file->getRealPath(), realpath(app_path()).DIRECTORY_SEPARATOR)', 3) => line('Str::after($file->getPathname(), app_path().DIRECTORY_SEPARATOR)', 3),

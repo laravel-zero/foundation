@@ -118,6 +118,10 @@ class HandleExceptions
      */
     protected function shouldIgnoreDeprecationErrors()
     {
+        if (static::$app['log'] instanceof \Psr\Log\NullLogger) {
+            return true;
+        }
+
         return ! class_exists(LogManager::class)
             || ! static::$app->hasBeenBootstrapped()
             || (static::$app->runningUnitTests() && ! Env::get('LOG_DEPRECATIONS_WHILE_TESTING'));
