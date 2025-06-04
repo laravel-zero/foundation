@@ -11,6 +11,8 @@ Also in this package, the `Console\Kernel::load()` method does not use the canon
 
 The `Illuminate\Foundation\Testing\Concerns\InteractsWithTestCaseLifecycle` class also has been modified to only run the queue teardown when the `Queue` class exists.
 
+See [`bin/sync`](bin/sync) for a full list of automated changes.
+
 ## Support the development
 **Do you like this project? Support it by donating**
 
