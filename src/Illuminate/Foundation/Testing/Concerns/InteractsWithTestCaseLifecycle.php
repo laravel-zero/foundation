@@ -216,7 +216,10 @@ trait InteractsWithTestCaseLifecycle
         }
 
         ValidateCsrfToken::flushState();
-        Validator::flushState();
+
+        if (class_exists(Validator::class)) {
+            Validator::flushState();
+        }
 
         if (class_exists(WorkCommand::class)) {
             WorkCommand::flushState();
