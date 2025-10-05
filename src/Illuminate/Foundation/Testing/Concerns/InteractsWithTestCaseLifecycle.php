@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\ParallelTesting;
 use Illuminate\Support\Once;
 use Illuminate\Support\Sleep;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Validator;
 use Illuminate\View\Component;
 use Mockery;
 use Mockery\Exception\InvalidCountException;
@@ -183,7 +184,7 @@ trait InteractsWithTestCaseLifecycle
             EncryptCookies::flushState();
         }
 
-        HandleExceptions::flushState();
+        HandleExceptions::flushState($this);
 
         if (class_exists(Markdown::class)) {
             Markdown::flushState();
@@ -215,6 +216,7 @@ trait InteractsWithTestCaseLifecycle
         }
 
         ValidateCsrfToken::flushState();
+        Validator::flushState();
 
         if (class_exists(WorkCommand::class)) {
             WorkCommand::flushState();
