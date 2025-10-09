@@ -79,6 +79,9 @@ transform([
     line('TrustHosts::flushState();', 2) => PHP_EOL.line('if (class_exists(TrustHosts::class)) {
             TrustHosts::flushState();
         }'.PHP_EOL, 2),
+    line('Validator::flushState();', 2) => PHP_EOL.line('if (class_exists(Validator::class)) {
+            Validator::flushState();
+        }'.PHP_EOL, 2),
     line('WorkCommand::flushState();', 2) => PHP_EOL.line('if (class_exists(WorkCommand::class)) {
             WorkCommand::flushState();
         }'.PHP_EOL, 2),
