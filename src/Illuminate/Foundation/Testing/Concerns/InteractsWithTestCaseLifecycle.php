@@ -221,6 +221,7 @@ trait InteractsWithTestCaseLifecycle
             Validator::flushState();
         }
 
+
         if (class_exists(WorkCommand::class)) {
             WorkCommand::flushState();
         }
