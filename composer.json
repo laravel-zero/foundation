@@ -7,7 +7,7 @@
         "php": "^8.2"
     },
     "require-dev": {
-        "laravel/framework": "^12.32.5"
+        "laravel/framework": "^12.35"
     },
     "autoload": {
         "files": [
