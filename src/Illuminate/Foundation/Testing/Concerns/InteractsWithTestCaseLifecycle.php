@@ -188,10 +188,22 @@ trait InteractsWithTestCaseLifecycle
             EncryptCookies::flushState();
         }
 
-        HandleCors::flushState();
+
+        if (class_exists(HandleCors::class)) {
+            HandleCors::flushState();
+        }
+
         HandleExceptions::flushState($this);
-        JsonApiResource::flushState();
-        JsonResource::flushState();
+
+        if (class_exists(JsonApiResource::class)) {
+            JsonApiResource::flushState();
+        }
+
+
+        if (class_exists(JsonResource::class)) {
+            JsonResource::flushState();
+        }
+
 
         if (class_exists(Markdown::class)) {
             Markdown::flushState();
@@ -210,7 +222,11 @@ trait InteractsWithTestCaseLifecycle
         }
 
         RegisterProviders::flushState();
-        Response::flushState();
+
+        if (class_exists(Response::class)) {
+            Response::flushState();
+        }
+
         Sleep::fake(false);
         TrimStrings::flushState();
 

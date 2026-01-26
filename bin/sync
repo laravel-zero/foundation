@@ -64,6 +64,18 @@ transform([
     line('Factory::flushState();', 2) => PHP_EOL.line('if (class_exists(Factory::class)) {
             Factory::flushState();
         }'.PHP_EOL, 2),
+    line('HandleCors::flushState();', 2) => PHP_EOL.line('if (class_exists(HandleCors::class)) {
+            HandleCors::flushState();
+        }'.PHP_EOL, 2),
+    line('JsonApiResource::flushState();', 2) => PHP_EOL.line('if (class_exists(JsonApiResource::class)) {
+            JsonApiResource::flushState();
+        }'.PHP_EOL, 2),
+    line('JsonResource::flushState();', 2) => PHP_EOL.line('if (class_exists(JsonResource::class)) {
+            JsonResource::flushState();
+        }'.PHP_EOL, 2),
+    line('Response::flushState();', 2) => PHP_EOL.line('if (class_exists(Response::class)) {
+            Response::flushState();
+        }'.PHP_EOL, 2),
     line('Migrator::withoutMigrations([]);', 2) => PHP_EOL.line('if (class_exists(Migrator::class)) {
             Migrator::withoutMigrations([]);
         }'.PHP_EOL, 2),
@@ -72,6 +84,9 @@ transform([
         }'.PHP_EOL, 2),
     line('Queue::createPayloadUsing(null);', 2) => PHP_EOL.line('if (class_exists(Queue::class)) {
             Queue::createPayloadUsing(null);
+        }'.PHP_EOL, 2),
+    line('Response::flushState();', 2) => PHP_EOL.line('if (class_exists(Response::class)) {
+            Response::flushState();
         }'.PHP_EOL, 2),
     line('TrustProxies::flushState();', 2) => PHP_EOL.line('if (class_exists(TrustProxies::class)) {
             TrustProxies::flushState();
