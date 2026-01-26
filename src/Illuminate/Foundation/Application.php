@@ -44,7 +44,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '12.40.0';
+    const VERSION = '12.48.1';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
@@ -1601,11 +1601,13 @@ class Application extends Container implements ApplicationContract, CachesConfig
      */
     public function setLocale($locale)
     {
+        $previous = $this['config']->get('app.locale');
+
         $this['config']->set('app.locale', $locale);
 
         $this['translator']->setLocale($locale);
 
-        $this['events']->dispatch(new LocaleUpdated($locale));
+        $this['events']->dispatch(new LocaleUpdated($locale, $previous));
     }
 
     /**
