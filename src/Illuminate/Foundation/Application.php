@@ -44,7 +44,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '12.54.1';
+    const VERSION = '13.1.1';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
