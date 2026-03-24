@@ -4,10 +4,10 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^8.2"
+        "php": "^8.3"
     },
     "require-dev": {
-        "laravel/framework": "^12.40"
+        "laravel/framework": "^13.0"
     },
     "autoload": {
         "files": [
@@ -22,7 +22,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "12.x-dev"
+            "dev-main": "13.x-dev"
         }
     },
     "scripts": {
