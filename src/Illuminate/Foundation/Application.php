@@ -44,7 +44,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '13.1.1';
+    const VERSION = '13.14.0';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
@@ -754,7 +754,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      */
     public function environment(...$environments)
     {
-        if (count($environments) > 0) {
+        if ($environments !== []) {
             $patterns = is_array($environments[0]) ? $environments[0] : $environments;
 
             return Str::is($patterns, $this['env']);
