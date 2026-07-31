@@ -189,7 +189,12 @@ trait InteractsWithTestCaseLifecycle
             Factory::flushState();
         }
 
-        FormRequest::flushState();
+
+        // `FormRequest` extends `Illuminate\Http\Request`, so `class_exists()` must check the parent:
+        if (class_exists(\Illuminate\Http\Request::class)) {
+            FormRequest::flushState();
+        }
+
         EncodedHtmlString::flushState();
 
         if (class_exists(EncryptCookies::class)) {
