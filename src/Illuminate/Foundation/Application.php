@@ -44,7 +44,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '13.23.0';
+    const VERSION = '12.54.1';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
@@ -215,13 +215,6 @@ class Application extends Container implements ApplicationContract, CachesConfig
     protected $absoluteCachePathPrefixes = ['/', '\\'];
 
     /**
-     * The application builder class.
-     *
-     * @var class-string<Configuration\ApplicationBuilder>
-     */
-    protected static string $applicationBuilder = Configuration\ApplicationBuilder::class;
-
-    /**
      * Create a new Illuminate application instance.
      *
      * @param  string|null  $basePath
@@ -251,7 +244,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
             default => static::inferBasePath(),
         };
 
-        return (new static::$applicationBuilder(new static($basePath)))
+        return (new Configuration\ApplicationBuilder(new static($basePath)))
             ->withKernels()
             ->withEvents()
             ->withCommands()
@@ -761,7 +754,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      */
     public function environment(...$environments)
     {
-        if ($environments !== []) {
+        if (count($environments) > 0) {
             $patterns = is_array($environments[0]) ? $environments[0] : $environments;
 
             return Str::is($patterns, $this['env']);
@@ -1671,7 +1664,6 @@ class Application extends Container implements ApplicationContract, CachesConfig
             'filesystem.cloud' => [\Illuminate\Contracts\Filesystem\Cloud::class],
             'hash' => [\Illuminate\Hashing\HashManager::class],
             'hash.driver' => [\Illuminate\Contracts\Hashing\Hasher::class],
-            'image' => [\Illuminate\Image\ImageManager::class],
             'log' => [\Illuminate\Log\LogManager::class, \Psr\Log\LoggerInterface::class],
             'mail.manager' => [\Illuminate\Mail\MailManager::class, \Illuminate\Contracts\Mail\Factory::class],
             'mailer' => [\Illuminate\Mail\Mailer::class, \Illuminate\Contracts\Mail\Mailer::class, \Illuminate\Contracts\Mail\MailQueue::class],

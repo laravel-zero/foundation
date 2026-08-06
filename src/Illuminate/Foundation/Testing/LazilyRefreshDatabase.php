@@ -37,10 +37,8 @@ trait LazilyRefreshDatabase
             }
         };
 
-        foreach ($this->connectionsToTransact() as $connection) {
-            $database->connection($connection)->beforeStartingTransaction($callback);
-            $database->connection($connection)->beforeExecuting($callback);
-        }
+        $database->beforeStartingTransaction($callback);
+        $database->beforeExecuting($callback);
 
         $this->beforeApplicationDestroyed(function () {
             RefreshDatabaseState::$lazilyRefreshed = false;

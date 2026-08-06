@@ -67,8 +67,6 @@ class DownCommand extends Command
                 $this->components->info('You may bypass maintenance mode via ['.config('app.url')."/{$downFilePayload['secret']}].");
             }
         } catch (Exception $e) {
-            report($e);
-
             $this->components->error(sprintf(
                 'Failed to enter maintenance mode: %s.',
                 $e->getMessage(),

@@ -116,7 +116,7 @@ class ViewMakeCommand extends GeneratorCommand
     protected function getTestPath()
     {
         return base_path(
-            (new Stringable($this->testClassFullyQualifiedName()))
+            Str::of($this->testClassFullyQualifiedName())
                 ->replace('\\', '/')
                 ->replaceFirst('Tests/Feature', 'tests/Feature')
                 ->append('Test.php')
@@ -157,7 +157,7 @@ class ViewMakeCommand extends GeneratorCommand
      */
     protected function testNamespace()
     {
-        return (new Stringable($this->testClassFullyQualifiedName()))
+        return Str::of($this->testClassFullyQualifiedName())
             ->beforeLast('\\')
             ->value();
     }
@@ -169,7 +169,7 @@ class ViewMakeCommand extends GeneratorCommand
      */
     protected function testClassName()
     {
-        return (new Stringable($this->testClassFullyQualifiedName()))
+        return Str::of($this->testClassFullyQualifiedName())
             ->afterLast('\\')
             ->append('Test')
             ->value();
@@ -182,15 +182,15 @@ class ViewMakeCommand extends GeneratorCommand
      */
     protected function testClassFullyQualifiedName()
     {
-        $name = (new Stringable(Str::lower($this->getNameInput())))->replace('.'.$this->option('extension'), '');
+        $name = Str::of(Str::lower($this->getNameInput()))->replace('.'.$this->option('extension'), '');
 
-        $namespacedName = (new Stringable(
+        $namespacedName = Str::of(
             (new Stringable($name))
                 ->replace('/', ' ')
                 ->explode(' ')
                 ->map(fn ($part) => (new Stringable($part))->ucfirst())
                 ->implode('\\')
-        ))
+        )
             ->replace(['-', '_'], ' ')
             ->explode(' ')
             ->map(fn ($part) => (new Stringable($part))->ucfirst())
@@ -220,7 +220,7 @@ class ViewMakeCommand extends GeneratorCommand
      */
     protected function testViewName()
     {
-        return (new Stringable($this->getNameInput()))
+        return Str::of($this->getNameInput())
             ->replace('/', '.')
             ->lower()
             ->value();

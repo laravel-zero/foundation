@@ -90,7 +90,7 @@ class EventServiceProvider extends ServiceProvider
     /**
      * Get the events and handlers.
      *
-     * @return array<string, array<int, string>>
+     * @return array
      */
     public function listens()
     {

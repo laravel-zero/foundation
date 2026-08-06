@@ -11,13 +11,10 @@ use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Foundation\Bootstrap\HandleExceptions;
 use Illuminate\Foundation\Bootstrap\RegisterProviders;
 use Illuminate\Foundation\Console\AboutCommand;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
-use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 use Illuminate\Foundation\Http\Middleware\TrimStrings;
-use Illuminate\Foundation\Testing\Attributes\SetUp;
-use Illuminate\Foundation\Testing\Attributes\TearDown;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\DatabaseTruncation;
@@ -37,7 +34,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\EncodedHtmlString;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\ParallelTesting;
-use Illuminate\Support\Lottery;
 use Illuminate\Support\Once;
 use Illuminate\Support\Sleep;
 use Illuminate\Support\Str;
@@ -46,7 +42,6 @@ use Illuminate\View\Component;
 use Mockery;
 use Mockery\Exception\InvalidCountException;
 use PHPUnit\Metadata\Annotation\Parser\Registry as PHPUnitRegistry;
-use ReflectionClass;
 use Throwable;
 
 trait InteractsWithTestCaseLifecycle
@@ -120,8 +115,6 @@ trait InteractsWithTestCaseLifecycle
      * @internal
      *
      * @return void
-     *
-     * @throws \Throwable
      */
     protected function tearDownTheTestEnvironment(): void
     {
@@ -189,12 +182,6 @@ trait InteractsWithTestCaseLifecycle
             Factory::flushState();
         }
 
-
-        // `FormRequest` extends `Illuminate\Http\Request`, so `class_exists()` must check the parent:
-        if (class_exists(\Illuminate\Http\Request::class)) {
-            FormRequest::flushState();
-        }
-
         EncodedHtmlString::flushState();
 
         if (class_exists(EncryptCookies::class)) {
@@ -217,7 +204,6 @@ trait InteractsWithTestCaseLifecycle
             JsonResource::flushState();
         }
 
-        Lottery::determineResultsNormally();
 
         if (class_exists(Markdown::class)) {
             Markdown::flushState();
@@ -242,7 +228,6 @@ trait InteractsWithTestCaseLifecycle
         }
 
         Sleep::fake(false);
-        Str::resetFactoryState();
         TrimStrings::flushState();
 
         if (class_exists(TrustProxies::class)) {
@@ -254,7 +239,7 @@ trait InteractsWithTestCaseLifecycle
             TrustHosts::flushState();
         }
 
-        PreventRequestForgery::flushState();
+        ValidateCsrfToken::flushState();
 
         if (class_exists(Validator::class)) {
             Validator::flushState();
@@ -278,7 +263,7 @@ trait InteractsWithTestCaseLifecycle
      */
     protected function setUpTraits()
     {
-        $uses = $this->traitsUsedByTest ?? class_uses_recursive(static::class);
+        $uses = $this->traitsUsedByTest ?? array_flip(class_uses_recursive(static::class));
 
         if (isset($uses[RefreshDatabase::class])) {
             $this->refreshDatabase();
@@ -311,16 +296,6 @@ trait InteractsWithTestCaseLifecycle
 
             if (method_exists($this, $method = 'tearDown'.class_basename($trait))) {
                 $this->beforeApplicationDestroyed(fn () => $this->{$method}());
-            }
-
-            foreach ((new ReflectionClass($trait))->getMethods() as $method) {
-                if ($method->getAttributes(SetUp::class) !== []) {
-                    $this->{$method->getName()}();
-                }
-
-                if ($method->getAttributes(TearDown::class) !== []) {
-                    $this->beforeApplicationDestroyed(fn () => $this->{$method->getName()}());
-                }
             }
         }
 

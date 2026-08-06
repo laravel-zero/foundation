@@ -64,9 +64,6 @@ transform([
     line('Factory::flushState();', 2) => PHP_EOL.line('if (class_exists(Factory::class)) {
             Factory::flushState();
         }'.PHP_EOL, 2),
-    line('FormRequest::flushState();', 2) => PHP_EOL.line('// `FormRequest` extends `Illuminate\Http\Request`, so `class_exists()` must check the parent:', 2).line('if (class_exists(\Illuminate\Http\Request::class)) {
-            FormRequest::flushState();
-        }'.PHP_EOL, 2),
     line('HandleCors::flushState();', 2) => PHP_EOL.line('if (class_exists(HandleCors::class)) {
             HandleCors::flushState();
         }'.PHP_EOL, 2),

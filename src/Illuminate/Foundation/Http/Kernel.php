@@ -577,7 +577,7 @@ class Kernel implements KernelContract
     /**
      * Get the application's global middleware.
      *
-     * @return array<int, class-string|string>
+     * @return array
      */
     public function getGlobalMiddleware()
     {
@@ -602,7 +602,7 @@ class Kernel implements KernelContract
     /**
      * Get the application's route middleware groups.
      *
-     * @return array<string, array<int, class-string|string>>
+     * @return array
      */
     public function getMiddlewareGroups()
     {

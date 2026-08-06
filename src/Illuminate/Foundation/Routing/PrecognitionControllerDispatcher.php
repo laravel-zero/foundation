@@ -31,8 +31,6 @@ class PrecognitionControllerDispatcher extends ControllerDispatcher
      * @param  object  $controller
      * @param  string  $method
      * @return $this
-     *
-     * @throws \RuntimeException
      */
     protected function ensureMethodExists($controller, $method)
     {

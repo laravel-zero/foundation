@@ -12,7 +12,7 @@ trait InteractsWithTime
      *
      * Freeze time.
      *
-     * @param  (callable(\Illuminate\Support\Carbon): TReturn)|null  $callback
+     * @param  (callable(): TReturn)|null  $callback
      * @return ($callback is null ? \Illuminate\Support\Carbon : TReturn)
      */
     public function freezeTime($callback = null)
@@ -27,7 +27,7 @@ trait InteractsWithTime
      *
      * Freeze time at the beginning of the current second.
      *
-     * @param  (callable(\Illuminate\Support\Carbon): TReturn)|null  $callback
+     * @param  (callable(): TReturn)|null  $callback
      * @return ($callback is null ? \Illuminate\Support\Carbon : TReturn)
      */
     public function freezeSecond($callback = null)
@@ -50,12 +50,11 @@ trait InteractsWithTime
 
     /**
      * @template TReturn of mixed
-     * @template TDate of \DateTimeInterface|\Closure|\Illuminate\Support\Carbon|string|bool|null
      *
      * Travel to another time.
      *
-     * @param  TDate  $date
-     * @param  (callable(TDate): TReturn)|null  $callback
+     * @param  \DateTimeInterface|\Closure|\Illuminate\Support\Carbon|string|bool|null  $date
+     * @param  (callable(): TReturn)|null  $callback
      * @return ($callback is null ? void : TReturn)
      */
     public function travelTo($date, $callback = null)

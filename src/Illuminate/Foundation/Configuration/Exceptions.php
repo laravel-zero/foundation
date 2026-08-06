@@ -151,21 +151,6 @@ class Exceptions
     }
 
     /**
-     * Indicate that the given exception type should stop job retries.
-     *
-     * @param  array|string  $class
-     * @return $this
-     */
-    public function dontRetry(array|string $class)
-    {
-        foreach (Arr::wrap($class) as $exceptionClass) {
-            $this->handler->dontRetry($exceptionClass);
-        }
-
-        return $this;
-    }
-
-    /**
      * Register a callback to determine if an exception should not be reported.
      *
      * @param  (\Closure(\Throwable): bool)  $dontReportWhen
@@ -174,19 +159,6 @@ class Exceptions
     public function dontReportWhen(Closure $dontReportWhen)
     {
         $this->handler->dontReportWhen($dontReportWhen);
-
-        return $this;
-    }
-
-    /**
-     * Register a callback to determine if an exception should stop job retries.
-     *
-     * @param  (\Closure(\Throwable): bool)  $dontRetryWhen
-     * @return $this
-     */
-    public function dontRetryWhen(Closure $dontRetryWhen)
-    {
-        $this->handler->dontRetryWhen($dontRetryWhen);
 
         return $this;
     }

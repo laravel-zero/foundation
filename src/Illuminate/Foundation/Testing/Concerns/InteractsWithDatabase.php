@@ -33,14 +33,6 @@ trait InteractsWithDatabase
             return $this;
         }
 
-        if ($data !== [] && array_is_list($data) && array_all($data, fn ($row) => is_array($row))) {
-            foreach ($data as $row) {
-                $this->assertDatabaseHas($table, $row, $connection);
-            }
-
-            return $this;
-        }
-
         if ($table instanceof Model) {
             $data = [
                 $table->getKeyName() => $table->getKey(),
@@ -68,14 +60,6 @@ trait InteractsWithDatabase
         if (is_iterable($table)) {
             foreach ($table as $item) {
                 $this->assertDatabaseMissing($item, $data, $connection);
-            }
-
-            return $this;
-        }
-
-        if ($data !== [] && array_is_list($data) && array_all($data, fn ($row) => is_array($row))) {
-            foreach ($data as $row) {
-                $this->assertDatabaseMissing($table, $row, $connection);
             }
 
             return $this;
@@ -115,22 +99,14 @@ trait InteractsWithDatabase
     }
 
     /**
-     * Assert that the given table or tables has no entries.
+     * Assert that the given table has no entries.
      *
-     * @param  iterable<\Illuminate\Database\Eloquent\Model>|\Illuminate\Database\Eloquent\Model|class-string<\Illuminate\Database\Eloquent\Model>|string  $table
+     * @param  \Illuminate\Database\Eloquent\Model|class-string<\Illuminate\Database\Eloquent\Model>|string  $table
      * @param  string|null  $connection
      * @return $this
      */
     protected function assertDatabaseEmpty($table, $connection = null)
     {
-        if (is_iterable($table)) {
-            foreach ($table as $item) {
-                $this->assertDatabaseEmpty($item, $connection);
-            }
-
-            return $this;
-        }
-
         $this->assertThat(
             $this->getTable($table), new CountInDatabase($this->getConnection($connection, $table), 0)
         );
@@ -151,7 +127,7 @@ trait InteractsWithDatabase
     {
         if (is_iterable($table)) {
             foreach ($table as $item) {
-                $this->assertSoftDeleted($item, $data, $connection, $deletedAtColumn);
+                $this->assertSoftDeleted($item, $data, $connection);
             }
 
             return $this;
@@ -164,14 +140,6 @@ trait InteractsWithDatabase
                 $table->getConnectionName(),
                 $table->getDeletedAtColumn()
             );
-        }
-
-        if ($data !== [] && array_is_list($data) && array_all($data, fn ($row) => is_array($row))) {
-            foreach ($data as $row) {
-                $this->assertSoftDeleted($table, $row, $connection, $deletedAtColumn);
-            }
-
-            return $this;
         }
 
         $this->assertThat(
@@ -199,7 +167,7 @@ trait InteractsWithDatabase
     {
         if (is_iterable($table)) {
             foreach ($table as $item) {
-                $this->assertNotSoftDeleted($item, $data, $connection, $deletedAtColumn);
+                $this->assertNotSoftDeleted($item, $data, $connection);
             }
 
             return $this;
@@ -212,14 +180,6 @@ trait InteractsWithDatabase
                 $table->getConnectionName(),
                 $table->getDeletedAtColumn()
             );
-        }
-
-        if ($data !== [] && array_is_list($data) && array_all($data, fn ($row) => is_array($row))) {
-            foreach ($data as $row) {
-                $this->assertNotSoftDeleted($table, $row, $connection, $deletedAtColumn);
-            }
-
-            return $this;
         }
 
         $this->assertThat(

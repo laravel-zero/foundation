@@ -95,7 +95,7 @@ class ServeCommand extends Command
 
     /** {@inheritdoc} */
     #[\Override]
-    protected function initialize(InputInterface $input, OutputInterface $output): void
+    protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->phpServerWorkers = transform((int) env('PHP_CLI_SERVER_WORKERS', 1), function (int $workers) {
             if ($workers < 2) {
@@ -133,7 +133,7 @@ class ServeCommand extends Command
 
         $environmentLastModified = $hasEnvironment
             ? filemtime($environmentFile)
-            : Carbon::now()->addDays(30)->getTimestamp();
+            : now()->addDays(30)->getTimestamp();
 
         $process = $this->startProcess($hasEnvironment);
 
@@ -185,7 +185,7 @@ class ServeCommand extends Command
                 return [$key => $value];
             }
 
-            return $this->shouldPassThroughEnvironmentVariable($key) ? [$key => $value] : [$key => false];
+            return in_array($key, static::$passthroughVariables) ? [$key => $value] : [$key => false];
         })->merge(['PHP_CLI_SERVER_WORKERS' => $this->phpServerWorkers])->all());
 
         $this->trap(fn () => [SIGTERM, SIGINT, SIGHUP, SIGUSR1, SIGUSR2, SIGQUIT], function ($signal) use ($process) {
@@ -257,7 +257,7 @@ class ServeCommand extends Command
      */
     protected function getHostAndPort()
     {
-        if (preg_match('/(\[.*\]):?([0-9]+)?/', $this->input->getOption('host'), $matches) === 1) {
+        if (preg_match('/(\[.*\]):?([0-9]+)?/', $this->input->getOption('host'), $matches) !== false) {
             return [
                 $matches[1] ?? $this->input->getOption('host'),
                 $matches[2] ?? null,
@@ -281,21 +281,6 @@ class ServeCommand extends Command
     {
         return is_null($this->input->getOption('port')) &&
             ($this->input->getOption('tries') > $this->portOffset);
-    }
-
-    /**
-     * Determine if the environment variable should be passed to the PHP server process.
-     *
-     * @param  string  $key
-     * @return bool
-     */
-    protected function shouldPassThroughEnvironmentVariable($key)
-    {
-        if (PHP_OS_FAMILY === 'Windows') {
-            return in_array(strtoupper($key), array_map(strtoupper(...), static::$passthroughVariables), true);
-        }
-
-        return in_array($key, static::$passthroughVariables, true);
     }
 
     /**
@@ -423,8 +408,6 @@ class ServeCommand extends Command
      *
      * @param  string  $line
      * @return int
-     *
-     * @throws \InvalidArgumentException
      */
     public static function getRequestPortFromLine($line)
     {
