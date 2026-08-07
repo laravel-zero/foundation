@@ -190,8 +190,9 @@ trait InteractsWithTestCaseLifecycle
         }
 
 
-        // `FormRequest` extends `Illuminate\Http\Request`, so `class_exists()` must check the parent:
-        if (class_exists(\Illuminate\Http\Request::class)) {
+        // `FormRequest` extends `Illuminate\Http\Request` and uses `Illuminate\Validation\ValidatesWhenResolvedTrait`,
+        // so `class_exists()` must check both the parent class and the trait:
+        if (class_exists(\Illuminate\Http\Request::class) && trait_exists(\Illuminate\Validation\ValidatesWhenResolvedTrait::class)) {
             FormRequest::flushState();
         }
 
