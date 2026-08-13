@@ -51,6 +51,12 @@ transform([
 ', 1),
 ], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php"));
 
+// Configure `Illuminate\Foundation\Bus\PendingDispatch` class
+transform([
+    'use Illuminate\Queue\Attributes\ReadsQueueAttributes;'.PHP_EOL.'use Illuminate\Support\Traits\Conditionable;' => 'use Illuminate\Support\Traits\Conditionable;'.PHP_EOL.'use Illuminate\Support\Traits\ReadsClassAttributes;',
+    line('use Conditionable, InteractsWithUniqueJobs, ReadsQueueAttributes;', 1) => line('// `Illuminate\Queue\Attributes\ReadsQueueAttributes` is not shipped by this mirror, and a missing trait', 1).line('// is a fatal error at class load, so we compose the trait it aliases instead:', 1).line('use Conditionable, InteractsWithUniqueJobs, ReadsClassAttributes;', 1),
+], fn ($changes) => $files->replaceInFile(array_keys($changes), array_values($changes), "{$workingPath}/src/Illuminate/Foundation/Bus/PendingDispatch.php"));
+
 // Configure `Illuminate\Foundation\Console\Kernel` class
 transform([
     line('Str::after($file->getRealPath(), realpath(app_path()).DIRECTORY_SEPARATOR)', 3) => line('Str::after($file->getPathname(), app_path().DIRECTORY_SEPARATOR)', 3),

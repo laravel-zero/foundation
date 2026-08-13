@@ -11,13 +11,15 @@ use Illuminate\Contracts\Queue\PreparesForDispatch;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Foundation\Queue\InteractsWithUniqueJobs;
 use Illuminate\Queue\Attributes\DebounceFor;
-use Illuminate\Queue\Attributes\ReadsQueueAttributes;
 use Illuminate\Support\Traits\Conditionable;
+use Illuminate\Support\Traits\ReadsClassAttributes;
 use LogicException;
 
 class PendingDispatch
 {
-    use Conditionable, InteractsWithUniqueJobs, ReadsQueueAttributes;
+    // `Illuminate\Queue\Attributes\ReadsQueueAttributes` is not shipped by this mirror, and a missing trait
+    // is a fatal error at class load, so we compose the trait it aliases instead:
+    use Conditionable, InteractsWithUniqueJobs, ReadsClassAttributes;
 
     /**
      * The job.
