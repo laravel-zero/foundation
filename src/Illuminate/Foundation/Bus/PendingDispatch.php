@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\PreparesForDispatch;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Foundation\Queue\InteractsWithUniqueJobs;
 use Illuminate\Queue\Attributes\DebounceFor;
+use Illuminate\Queue\Events\UniqueJobSkipped;
 use Illuminate\Support\Traits\Conditionable;
 use Illuminate\Support\Traits\ReadsClassAttributes;
 use LogicException;
@@ -217,8 +218,19 @@ class PendingDispatch
             return true;
         }
 
-        return (new UniqueLock(Container::getInstance()->make(Cache::class)))
-            ->acquire($this->job);
+        $container = Container::getInstance();
+
+        $lockAcquired = (new UniqueLock($container->make(Cache::class)))->acquire($this->job);
+
+        if ($lockAcquired) {
+            return true;
+        }
+
+        if ($container->bound('events')) {
+            $container->make('events')->dispatch(new UniqueJobSkipped($this->job));
+        }
+
+        return false;
     }
 
     /**
@@ -284,13 +296,11 @@ class PendingDispatch
      */
     public function __destruct()
     {
-        $this->addUniqueJobInformationToContext($this->job);
-
         if (! $this->shouldDispatch()) {
-            $this->removeUniqueJobInformationFromContext($this->job);
-
             return;
         }
+
+        $this->addUniqueJobInformationToContext($this->job);
 
         $this->acquireDebounceLock();
 
