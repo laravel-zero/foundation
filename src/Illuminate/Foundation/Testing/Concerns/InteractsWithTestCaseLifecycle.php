@@ -43,6 +43,7 @@ use Illuminate\Support\Sleep;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Illuminate\View\Component;
+use Laravel\Prompts\Prompt;
 use Mockery;
 use Mockery\Exception\InvalidCountException;
 use PHPUnit\Metadata\Annotation\Parser\Registry as PHPUnitRegistry;
@@ -178,6 +179,18 @@ trait InteractsWithTestCaseLifecycle
             $this->originalDeprecationHandler = null;
         }
 
+        $this->flushState();
+
+        if ($this->callbackException) {
+            throw $this->callbackException;
+        }
+    }
+
+    /**
+     * Reset static state between test executions.
+     */
+    protected function flushState(): void
+    {
         AboutCommand::flushState();
         Artisan::forgetBootstrappers();
         Component::flushCache();
@@ -231,6 +244,7 @@ trait InteractsWithTestCaseLifecycle
 
         Once::flush();
         PreventRequestsDuringMaintenance::flushState();
+        Prompt::flushState();
 
         if (class_exists(Queue::class)) {
             Queue::createPayloadUsing(null);
@@ -266,10 +280,6 @@ trait InteractsWithTestCaseLifecycle
             WorkCommand::flushState();
         }
 
-
-        if ($this->callbackException) {
-            throw $this->callbackException;
-        }
     }
 
     /**

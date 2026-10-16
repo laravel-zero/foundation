@@ -77,6 +77,7 @@ class RouteListCommand extends Command
         'GET' => 'blue',
         'HEAD' => '#6C7280',
         'OPTIONS' => '#6C7280',
+        'QUERY' => '#6C7280',
         'POST' => 'yellow',
         'PUT' => 'yellow',
         'PATCH' => 'yellow',
@@ -107,11 +108,15 @@ class RouteListCommand extends Command
         }
 
         if (! $this->router->getRoutes()->count()) {
-            return $this->components->error("Your application doesn't have any routes.");
+            return $this->option('json')
+                ? $this->output->writeln('[]')
+                : $this->components->error("Your application doesn't have any routes.");
         }
 
         if (empty($routes = $this->getRoutes())) {
-            return $this->components->error("Your application doesn't have any routes matching the given criteria.");
+            return $this->option('json')
+                ? $this->output->writeln('[]')
+                : $this->components->error("Your application doesn't have any routes matching the given criteria.");
         }
 
         $this->displayRoutes($routes);
@@ -405,7 +410,7 @@ class RouteListCommand extends Command
         $routes = $routes->map(
             fn ($route) => array_merge($route, [
                 'action' => $this->formatActionForCli($route),
-                'method' => $route['method'] === 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS' ? 'ANY' : $route['method'],
+                'method' => $route['method'] === implode('|', Router::$verbs) ? 'ANY' : $route['method'],
                 'uri' => $route['domain'] ? ($route['domain'].'/'.ltrim($route['uri'], '/')) : $route['uri'],
             ]),
         );
