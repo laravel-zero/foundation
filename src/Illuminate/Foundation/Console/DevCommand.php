@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Console\Prohibitable;
 use Illuminate\Foundation\DevCommandMode;
 use Illuminate\Foundation\DevCommands;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\NodePackageManager;
 use Symfony\Component\Console\Attribute\AsCommand;
 
@@ -18,13 +19,6 @@ use function Termwind\terminal;
 class DevCommand extends Command
 {
     use Prohibitable;
-
-    /**
-     * The version of `@laravel/multiplex` to use.
-     *
-     * @var string
-     */
-    protected const MULTIPLEX_VERSION = '0.4';
 
     /**
      * The name and signature of the console command.
@@ -133,7 +127,7 @@ class DevCommand extends Command
 
         $title = 'artisan dev · '.(config('app.name') === 'Laravel' ? basename(base_path()) : config('app.name'));
 
-        $command = '@laravel/multiplex@'.self::MULTIPLEX_VERSION.' --title '.escapeshellarg($title);
+        $command = '@laravel/multiplex --title '.escapeshellarg($title);
 
         if (! $flags->isEmpty()) {
             $command .= ' '.$flags->implode(' ');
@@ -176,7 +170,15 @@ class DevCommand extends Command
 
         $this->line('');
 
-        passthru($command, $exitCode);
+        $process = Process::forever()
+            ->options(['create_process_group' => true])
+            ->start($command, fn ($type, $output) => $this->output->write($output));
+
+        sapi_windows_set_ctrl_handler($handler = fn () => $process->stop());
+
+        $exitCode = $process->wait()->exitCode();
+
+        sapi_windows_set_ctrl_handler($handler, false);
 
         $columns === false ? putenv('COLUMNS') : putenv("COLUMNS={$columns}");
 

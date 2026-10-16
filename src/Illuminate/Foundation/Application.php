@@ -34,6 +34,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use function Illuminate\Filesystem\join_paths;
+use function Illuminate\Support\enum_value;
 
 class Application extends Container implements ApplicationContract, CachesConfiguration, CachesRoutes
 {
@@ -44,7 +45,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
      *
      * @var string
      */
-    const VERSION = '13.25.0';
+    const VERSION = '13.37.0';
 
     /**
      * Copied from HttpKernelInterface, which this class no longer extends.
@@ -330,12 +331,12 @@ class Application extends Container implements ApplicationContract, CachesConfig
 
         $this['events']->listen(
             'bootstrapping: *',
-            fn ($bootstrapper) => Cloud::bootstrapperBootstrapping($this, Str::after($bootstrapper, 'bootstrapping: '))
+            fn ($bootstrapper) => CloudBootstrapper::bootstrapping($this, Str::after($bootstrapper, 'bootstrapping: '))
         );
 
         $this['events']->listen(
             'bootstrapped: *',
-            fn ($bootstrapper) => Cloud::bootstrapperBootstrapped($this, Str::after($bootstrapper, 'bootstrapped: '))
+            fn ($bootstrapper) => CloudBootstrapper::bootstrapped($this, Str::after($bootstrapper, 'bootstrapped: '))
         );
     }
 
@@ -756,7 +757,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
     /**
      * Get or check the current application environment.
      *
-     * @param  string|array  ...$environments
+     * @param  \UnitEnum|string|array  ...$environments
      * @return string|bool
      */
     public function environment(...$environments)
@@ -764,7 +765,7 @@ class Application extends Container implements ApplicationContract, CachesConfig
         if ($environments !== []) {
             $patterns = is_array($environments[0]) ? $environments[0] : $environments;
 
-            return Str::is($patterns, $this['env']);
+            return Str::is(array_map(enum_value(...), $patterns), $this['env']);
         }
 
         return $this['env'];
